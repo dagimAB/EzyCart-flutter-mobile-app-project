@@ -69,7 +69,7 @@ class CheckoutScreen extends StatelessWidget {
               ),
             ],
           ),
-        ),yyyyy
+        ),
       ),
       bottomNavigationBar: Padding(
         padding: const EdgeInsets.all(ESizes.defaultSpace),
