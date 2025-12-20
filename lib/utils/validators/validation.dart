@@ -1,7 +1,11 @@
-
-
-
 class EValidator {
+  static String? validateEmptyText(String? fieldName, String? value) {
+    if (value == null || value.isEmpty) {
+      return '$fieldName is required.';
+    }
+    return null;
+  }
+
   static String? validateEmail(String? value) {
     if (value == null || value.isEmpty) {
       return 'Email is required.';
@@ -10,8 +14,7 @@ class EValidator {
     // Regular expression for email validation
     final emailRegExp = RegExp(
       r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$',
-    ); 
-
+    );
 
     if (!emailRegExp.hasMatch(value)) {
       return 'Invalid email address.';
@@ -53,18 +56,14 @@ class EValidator {
       return 'Phone number is required.';
     }
 
-    String cleanedValue = value.replaceAll(RegExp(r'[()\s\-\+]'), '');
+    // Regular expression for Ethiopian phone number validation
+    // Matches: +251xxxxxxxxx or 0xxxxxxxxx (assuming 9 digits after 0 or +251)
+    final phoneRegExp = RegExp(r'^(\+251|0)\d{9}$');
 
-    final ethiopianPhoneRegExp = RegExp(r'^(09|07)\d{8}$|^251\d{9}$');
-
-    if (!ethiopianPhoneRegExp.hasMatch(cleanedValue)) {
-
-      return 'Invalid Ethiopian phone number format (e.g., 09xxxxxxxx or +2519xxxxxxxx).';
+    if (!phoneRegExp.hasMatch(value)) {
+      return 'Invalid phone number format (Use +251... or 0...)';
     }
 
     return null;
   }
-
-
-
 }

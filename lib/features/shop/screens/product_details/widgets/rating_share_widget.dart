@@ -3,9 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
 
 class ERatingShareWidget extends StatelessWidget {
-  const ERatingShareWidget({
-    super.key,
-  });
+  const ERatingShareWidget({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +18,10 @@ class ERatingShareWidget extends StatelessWidget {
             Text.rich(
               TextSpan(
                 children: [
-                  TextSpan(text: '5.0', style: Theme.of(context).textTheme.bodyLarge),
+                  TextSpan(
+                    text: '5.0',
+                    style: Theme.of(context).textTheme.bodyLarge,
+                  ),
                   const TextSpan(text: '(199)'),
                 ],
               ),
@@ -28,7 +29,6 @@ class ERatingShareWidget extends StatelessWidget {
           ],
         ),
         // Share Button
-        IconButton(onPressed: () {}, icon: const Icon(Icons.share, size: ESizes.iconMd)),
       ],
     );
   }

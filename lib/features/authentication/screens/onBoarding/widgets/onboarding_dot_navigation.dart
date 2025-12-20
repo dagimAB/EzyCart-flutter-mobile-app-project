@@ -1,4 +1,5 @@
 import 'package:ezycart/features/authentication/controllers/onboarding/onboarding_controller.dart';
+import 'package:get/get.dart';
 import 'package:ezycart/utils/constants/colors.dart';
 import 'package:ezycart/utils/constants/sizes.dart';
 import 'package:ezycart/utils/device/device_utility.dart';
@@ -11,7 +12,9 @@ class OnBoardingDotNavigation extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final controller = OnBoardingController.instance;
+    final controller = Get.isRegistered<OnBoardingController>()
+        ? OnBoardingController.instance
+        : Get.put(OnBoardingController());
     final dark = EHelperFunctions.isDarkMode(context);
 
     return Positioned(

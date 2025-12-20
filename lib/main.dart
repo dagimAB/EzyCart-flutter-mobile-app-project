@@ -1,17 +1,30 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:ezycart/app.dart';
-
-
+import 'package:firebase_core/firebase_core.dart';
+import 'package:get_storage/get_storage.dart';
+import 'firebase_options.dart';
 
 /// -------------Entry point of Flutter App---------
-void main(){
+Future<void> main() async {
+  try {
+    // Todo: Add Widgets Binding
+    WidgetsFlutterBinding.ensureInitialized();
 
-  // Todo: Add Widgets Binding 
-  // Todo: Init Local Storage
-  // Todo: Await Native Splash
-  // Todo: Initialize Firebase
-  // Todo: Initialize Authentication
-  runApp(const App());
+    // Load Environment Variables
+    await dotenv.load(fileName: ".env");
+
+    // Todo: Init Local Storage
+    await GetStorage.init();
+
+    // Todo: Initialize Firebase
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+
+    // Todo: Initialize Authentication
+    runApp(const App());
+  } catch (e) {
+    debugPrint('Error in main: $e');
+  }
 }
-
-

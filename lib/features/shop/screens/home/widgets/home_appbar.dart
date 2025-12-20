@@ -1,8 +1,10 @@
 import 'package:ezycart/common/widgets/appbar/appbar.dart';
 import 'package:ezycart/common/widgets/products/cart/cart_menu_icon.dart';
+import 'package:ezycart/features/shop/screens/cart/cart.dart';
 import 'package:ezycart/utils/constants/colors.dart';
 import 'package:ezycart/utils/constants/text_strings.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class EHomeAppBar extends StatelessWidget {
   const EHomeAppBar({super.key});
@@ -15,24 +17,24 @@ class EHomeAppBar extends StatelessWidget {
         children: [
           Text(
             ETexts.homeAppBarTitle,
-            style: Theme.of(context).textTheme.labelMedium!.apply(
-              color: EColors.grey,
-            ), 
+            style: Theme.of(
+              context,
+            ).textTheme.labelMedium!.apply(color: EColors.grey),
           ),
           Text(
-            ETexts.homeAppBarSubTitle, 
-            style: Theme.of(context).textTheme.headlineSmall!.apply(
-              color: EColors.white,
-            ),
+            ETexts.homeAppBarSubTitle,
+            style: Theme.of(
+              context,
+            ).textTheme.headlineSmall!.apply(color: EColors.white),
           ),
         ],
       ), // Column
       actions: [
         ECartCounterIcon(
-          onPressed: () {},
+          onPressed: () => Get.to(() => const CartScreen()),
           iconColor: EColors.white,
         ),
       ],
-    ); 
+    );
   }
 }

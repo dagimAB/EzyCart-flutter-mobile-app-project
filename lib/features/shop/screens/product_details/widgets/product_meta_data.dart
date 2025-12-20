@@ -3,6 +3,7 @@ import 'package:ezycart/common/widgets/images/e_circular_image.dart';
 import 'package:ezycart/common/widgets/texts/e_brand_title_with_verified_icon.dart';
 import 'package:ezycart/common/widgets/texts/product_price_text.dart';
 import 'package:ezycart/common/widgets/texts/product_title_text.dart';
+import 'package:ezycart/features/shop/models/product_model.dart';
 import 'package:ezycart/utils/constants/colors.dart';
 import 'package:ezycart/utils/constants/enums.dart';
 import 'package:ezycart/utils/constants/image_strings.dart';
@@ -11,7 +12,9 @@ import 'package:ezycart/utils/helpers/helper_functions.dart';
 import 'package:flutter/material.dart';
 
 class EProductMetaData extends StatelessWidget {
-  const EProductMetaData({super.key});
+  const EProductMetaData({super.key, required this.product});
+
+  final ProductModel product;
 
   @override
   Widget build(BuildContext context) {
@@ -23,37 +26,46 @@ class EProductMetaData extends StatelessWidget {
         Row(
           children: [
             // Sale Tag
-            ERoundedContainer(
-              radius: ESizes.sm,
-              backgroundColor: EColors.secondary.withValues(alpha: 0.8),
-              padding: const EdgeInsets.symmetric(
-                horizontal: ESizes.sm,
-                vertical: ESizes.xs,
+            if (product.salePrice != null)
+              ERoundedContainer(
+                radius: ESizes.sm,
+                backgroundColor: EColors.secondary.withValues(alpha: 0.8),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: ESizes.sm,
+                  vertical: ESizes.xs,
+                ),
+                child: Text(
+                  '${((product.price - product.salePrice!) / product.price * 100).round()}%',
+                  style: Theme.of(
+                    context,
+                  ).textTheme.labelLarge!.apply(color: EColors.black),
+                ),
               ),
-              child: Text(
-                '25%',
-                style: Theme.of(
-                  context,
-                ).textTheme.labelLarge!.apply(color: EColors.black),
-              ),
-            ),
-            const SizedBox(width: ESizes.spaceBtwItems),
+            if (product.salePrice != null)
+              const SizedBox(width: ESizes.spaceBtwItems),
 
             // Price
-            Text(
-              '\$250',
-              style: Theme.of(context).textTheme.titleSmall!.apply(
-                decoration: TextDecoration.lineThrough,
+            if (product.salePrice != null)
+              Text(
+                '\$${product.price}',
+                style: Theme.of(context).textTheme.titleSmall!.apply(
+                  decoration: TextDecoration.lineThrough,
+                ),
               ),
+            if (product.salePrice != null)
+              const SizedBox(width: ESizes.spaceBtwItems),
+            EProductPriceText(
+              price: product.salePrice != null
+                  ? product.salePrice.toString()
+                  : product.price.toString(),
+              isLarge: true,
             ),
-            const SizedBox(width: ESizes.spaceBtwItems),
-            const EProductPriceText(price: '175', isLarge: true),
           ],
         ),
         const SizedBox(height: ESizes.spaceBtwItems / 1.5),
 
         // Title
-        const EProductTitleText(title: 'Green Nike Sports Shirt'),
+        EProductTitleText(title: product.title),
         const SizedBox(height: ESizes.spaceBtwItems / 1.5),
 
         // Stock Status
@@ -61,7 +73,10 @@ class EProductMetaData extends StatelessWidget {
           children: [
             const EProductTitleText(title: 'Status'),
             const SizedBox(width: ESizes.spaceBtwItems),
-            Text('In Stock', style: Theme.of(context).textTheme.titleMedium),
+            Text(
+              product.stock > 0 ? 'In Stock' : 'Out of Stock',
+              style: Theme.of(context).textTheme.titleMedium,
+            ),
           ],
         ),
         const SizedBox(height: ESizes.spaceBtwItems / 1.5),
@@ -75,8 +90,8 @@ class EProductMetaData extends StatelessWidget {
               height: 32,
               overlayColor: darkMode ? EColors.white : EColors.black,
             ),
-            const EBrandTitleWithVerifiedIcon(
-              title: 'Nike',
+            EBrandTitleWithVerifiedIcon(
+              title: product.brand?.name ?? '',
               brandTextSize: TextSize.large,
             ),
           ],

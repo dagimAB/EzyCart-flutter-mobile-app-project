@@ -1,10 +1,12 @@
 import 'package:ezycart/common/widgets/appbar/appbar.dart';
 import 'package:ezycart/common/widgets/images/e_circular_image.dart';
 import 'package:ezycart/common/widgets/texts/section_heading.dart';
+import 'package:ezycart/features/personalization/controllers/user_controller.dart';
 import 'package:ezycart/features/personalization/screens/profile/widgets/profile_menu.dart';
 import 'package:ezycart/utils/constants/image_strings.dart';
 import 'package:ezycart/utils/constants/sizes.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
 
 class ProfileScreen extends StatelessWidget {
@@ -12,6 +14,8 @@ class ProfileScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final controller = UserController.instance;
+
     return Scaffold(
       appBar: const EAppBar(showBackArrow: true, title: Text('Profile')),
       body: SingleChildScrollView(
@@ -24,8 +28,24 @@ class ProfileScreen extends StatelessWidget {
                 width: double.infinity,
                 child: Column(
                   children: [
-                    const ECircularImage(image: EImages.productImage1, width: 80, height: 80),
-                    TextButton(onPressed: () {}, child: const Text('Change Profile Picture')),
+                    Obx(() {
+                      final networkImage = controller.user.value.profilePicture;
+                      final image = networkImage.isNotEmpty
+                          ? networkImage
+                          : EImages.user;
+                      return controller.imageUploading.value
+                          ? const CircularProgressIndicator()
+                          : ECircularImage(
+                              image: image,
+                              isNetworkImage: networkImage.isNotEmpty,
+                              width: 80,
+                              height: 80,
+                            );
+                    }),
+                    TextButton(
+                      onPressed: () => controller.uploadUserProfilePicture(),
+                      child: const Text('Change Profile Picture'),
+                    ),
                   ],
                 ),
               ),
@@ -36,34 +56,68 @@ class ProfileScreen extends StatelessWidget {
               const SizedBox(height: ESizes.spaceBtwItems),
 
               // Heading Profile Info
-              const ESectionHeading(title: 'Profile Information', showActionButton: false),
+              const ESectionHeading(
+                title: 'Profile Information',
+                showActionButton: false,
+              ),
               const SizedBox(height: ESizes.spaceBtwItems),
 
-              EProfileMenu(onPressed: () {}, title: 'Name', value: 'Coding with T'),
-              EProfileMenu(onPressed: () {}, title: 'Username', value: 'coding_with_t'),
+              Obx(
+                () => EProfileMenu(
+                  onPressed: () {},
+                  title: 'Name',
+                  value: controller.user.value.fullName,
+                ),
+              ),
+              Obx(
+                () => EProfileMenu(
+                  onPressed: () {},
+                  title: 'Username',
+                  value: controller.user.value.username,
+                ),
+              ),
 
               const SizedBox(height: ESizes.spaceBtwItems),
               const Divider(),
               const SizedBox(height: ESizes.spaceBtwItems),
 
               // Heading Personal Info
-              const ESectionHeading(title: 'Personal Information', showActionButton: false),
+              const ESectionHeading(
+                title: 'Personal Information',
+                showActionButton: false,
+              ),
               const SizedBox(height: ESizes.spaceBtwItems),
 
-              EProfileMenu(onPressed: () {}, title: 'User ID', value: '45689', icon: Iconsax.copy),
-              EProfileMenu(onPressed: () {}, title: 'E-mail', value: 'support@codingwitht.com'),
-              EProfileMenu(onPressed: () {}, title: 'Phone Number', value: '+92-317-8059525'),
-              EProfileMenu(onPressed: () {}, title: 'Gender', value: 'Male'),
-              EProfileMenu(onPressed: () {}, title: 'Date of Birth', value: '10 Oct, 1994'),
-              const Divider(),
-              const SizedBox(height: ESizes.spaceBtwItems),
-
-              Center(
-                child: TextButton(
+              Obx(
+                () => EProfileMenu(
                   onPressed: () {},
-                  child: const Text('Close Account', style: TextStyle(color: Colors.red)),
+                  title: 'User ID',
+                  value: controller.user.value.id,
+                  icon: Iconsax.copy,
                 ),
               ),
+              Obx(
+                () => EProfileMenu(
+                  onPressed: () {},
+                  title: 'E-mail',
+                  value: controller.user.value.email,
+                ),
+              ),
+              Obx(
+                () => EProfileMenu(
+                  onPressed: () {},
+                  title: 'Phone Number',
+                  value: controller.user.value?.phoneNumber ?? '',
+                ),
+              ),
+              EProfileMenu(onPressed: () {}, title: 'Gender', value: 'Male'),
+              EProfileMenu(
+                onPressed: () {},
+                title: 'Date of Birth',
+                value: '10 Oct, 1994',
+              ),
+              const Divider(),
+              const SizedBox(height: ESizes.spaceBtwItems),
             ],
           ),
         ),

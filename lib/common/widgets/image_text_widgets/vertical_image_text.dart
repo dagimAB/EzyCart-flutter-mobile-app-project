@@ -1,7 +1,3 @@
-
-
-
-
 import 'package:ezycart/utils/constants/colors.dart';
 import 'package:ezycart/utils/constants/sizes.dart';
 import 'package:ezycart/utils/helpers/helper_functions.dart';
@@ -15,12 +11,14 @@ class EVerticalImageText extends StatelessWidget {
     this.textColor = EColors.white,
     this.backgroundColor = EColors.white,
     this.onTap,
+    this.isNetworkImage = false,
   });
 
   final String image, title;
   final Color textColor;
   final Color? backgroundColor;
   final void Function()? onTap;
+  final bool isNetworkImage;
 
   @override
   Widget build(BuildContext context) {
@@ -43,11 +41,13 @@ class EVerticalImageText extends StatelessWidget {
                 borderRadius: BorderRadius.circular(100),
               ),
               child: Center(
-                child: Image(
-                  image: AssetImage(image),
-                  fit: BoxFit.cover,
-                  // color: dark ? EColors.light : EColors.dark,
-                ),
+                child: isNetworkImage
+                    ? Image.network(image, fit: BoxFit.cover)
+                    : Image(
+                        image: AssetImage(image),
+                        fit: BoxFit.cover,
+                        // color: dark ? EColors.light : EColors.dark,
+                      ),
               ),
             ),
 

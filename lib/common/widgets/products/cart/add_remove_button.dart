@@ -6,7 +6,15 @@ import 'package:iconsax/iconsax.dart';
 import 'package:ezycart/common/widgets/icons/e_circular_icon.dart';
 
 class EProductQuantityWithAddRemoveButton extends StatelessWidget {
-  const EProductQuantityWithAddRemoveButton({super.key});
+  const EProductQuantityWithAddRemoveButton({
+    super.key,
+    required this.quantity,
+    this.add,
+    this.remove,
+  });
+
+  final int quantity;
+  final VoidCallback? add, remove;
 
   @override
   Widget build(BuildContext context) {
@@ -24,10 +32,13 @@ class EProductQuantityWithAddRemoveButton extends StatelessWidget {
           backgroundColor: EHelperFunctions.isDarkMode(context)
               ? EColors.darkerGrey
               : EColors.light,
-          onPressed: () {},
+          onPressed: remove,
         ),
         const SizedBox(width: ESizes.spaceBtwItems),
-        Text('2', style: Theme.of(context).textTheme.titleSmall),
+        Text(
+          quantity.toString(),
+          style: Theme.of(context).textTheme.titleSmall,
+        ),
         const SizedBox(width: ESizes.spaceBtwItems),
         ECircularIcon(
           icon: Iconsax.add,
@@ -36,7 +47,7 @@ class EProductQuantityWithAddRemoveButton extends StatelessWidget {
           size: ESizes.md,
           color: EColors.white,
           backgroundColor: EColors.primary,
-          onPressed: () {},
+          onPressed: add,
         ),
       ],
     );

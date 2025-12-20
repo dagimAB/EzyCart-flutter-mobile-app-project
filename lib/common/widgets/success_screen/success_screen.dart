@@ -1,13 +1,17 @@
 import 'package:ezycart/common/styles/spacing_styles.dart';
-import 'package:ezycart/features/authentication/screens/login/login.dart';
 import 'package:ezycart/utils/constants/sizes.dart';
 import 'package:ezycart/utils/constants/text_strings.dart';
 import 'package:ezycart/utils/helpers/helper_functions.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 
 class SuccessScreen extends StatelessWidget {
-  const SuccessScreen({super.key, required this.image, required this.title, required this.subtitle, required this.onPressed});
+  const SuccessScreen({
+    super.key,
+    required this.image,
+    required this.title,
+    required this.subtitle,
+    required this.onPressed,
+  });
 
   final String image, title, subtitle;
   final VoidCallback onPressed;
@@ -52,8 +56,8 @@ class SuccessScreen extends StatelessWidget {
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
-                  onPressed: () => Get.to(() => const LoginScreen()),
-                  child: Text(ETexts.eContinue),
+                  onPressed: onPressed,
+                  child: const Text(ETexts.eContinue),
                 ),
               ),
             ],

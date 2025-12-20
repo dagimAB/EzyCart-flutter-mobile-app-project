@@ -9,9 +9,13 @@ class EBrandShowcase extends StatelessWidget {
   const EBrandShowcase({
     super.key,
     required this.images,
+    required this.brandName,
+    required this.brandImage,
   });
 
   final List<String> images;
+  final String brandName;
+  final String brandImage;
 
   @override
   Widget build(BuildContext context) {
@@ -24,13 +28,15 @@ class EBrandShowcase extends StatelessWidget {
       child: Column(
         children: [
           // Brand with Products Count
-          const EBrandCard(showBorder: false),
+          EBrandCard(showBorder: false, image: brandImage, title: brandName),
           const SizedBox(height: ESizes.spaceBtwItems),
 
           // Brand Top 3 Product Images
           Row(
-            children: images.map((image) => brandTopProductImageWidget(image, context)).toList(),
-          )
+            children: images
+                .map((image) => brandTopProductImageWidget(image, context))
+                .toList(),
+          ),
         ],
       ),
     );
@@ -42,7 +48,9 @@ class EBrandShowcase extends StatelessWidget {
         height: 100,
         padding: const EdgeInsets.all(ESizes.md),
         margin: const EdgeInsets.only(right: ESizes.sm),
-        backgroundColor: EHelperFunctions.isDarkMode(context) ? EColors.darkerGrey : EColors.light,
+        backgroundColor: EHelperFunctions.isDarkMode(context)
+            ? EColors.darkerGrey
+            : EColors.light,
         child: Image(image: AssetImage(image), fit: BoxFit.contain),
       ),
     );

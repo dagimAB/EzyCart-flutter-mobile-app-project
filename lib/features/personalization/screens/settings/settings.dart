@@ -3,10 +3,13 @@ import 'package:ezycart/common/widgets/custom_shapes/containers/primary_header_c
 import 'package:ezycart/common/widgets/list_tiles/settings_menu_tile.dart';
 import 'package:ezycart/common/widgets/list_tiles/user_profile_tile.dart';
 import 'package:ezycart/common/widgets/texts/section_heading.dart';
+import 'package:ezycart/data/repositories/authentication/authentication_repository.dart';
+import 'package:ezycart/features/personalization/controllers/user_controller.dart';
 import 'package:ezycart/features/personalization/screens/address/address.dart';
 import 'package:ezycart/features/personalization/screens/profile/profile.dart';
 import 'package:ezycart/features/shop/screens/cart/cart.dart';
 import 'package:ezycart/features/shop/screens/order/order.dart';
+import 'package:ezycart/features/shop/screens/product/add_product.dart';
 import 'package:ezycart/utils/constants/colors.dart';
 import 'package:ezycart/utils/constants/sizes.dart';
 import 'package:flutter/material.dart';
@@ -18,6 +21,8 @@ class SettingsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final controller = Get.put(UserController());
+
     return Scaffold(
       body: SingleChildScrollView(
         child: Column(
@@ -37,8 +42,13 @@ class SettingsScreen extends StatelessWidget {
                   ),
 
                   // User Profile Card
-                  EUserProfileTile(
-                    onPressed: () => Get.to(() => const ProfileScreen()),
+                  Obx(
+                    () => EUserProfileTile(
+                      title: controller.user.value.fullName,
+                      subtitle: controller.user.value.email,
+                      imageUrl: controller.user.value.profilePicture,
+                      onPressed: () => Get.to(() => const ProfileScreen()),
+                    ),
                   ),
                   const SizedBox(height: ESizes.spaceBtwSections),
                 ],
@@ -75,61 +85,41 @@ class SettingsScreen extends StatelessWidget {
                     subTitle: 'In-progress and Completed Orders',
                     onTap: () => Get.to(() => const OrderScreen()),
                   ),
-                  ESettingsMenuTile(
-                    icon: Iconsax.bank,
-                    title: 'Bank Account',
-                    subTitle: 'Withdraw balance to registered bank account',
-                    onTap: () {},
-                  ),
-                  ESettingsMenuTile(
-                    icon: Iconsax.discount_shape,
-                    title: 'My Coupons',
-                    subTitle: 'List of all the discounted coupons',
-                    onTap: () {},
-                  ),
-                  ESettingsMenuTile(
-                    icon: Iconsax.notification,
-                    title: 'Notifications',
-                    subTitle: 'Set any kind of notification message',
-                    onTap: () {},
-                  ),
-                  ESettingsMenuTile(
-                    icon: Iconsax.security_card,
-                    title: 'Account Privacy',
-                    subTitle: 'Manage data usage and connected accounts',
-                    onTap: () {},
-                  ),
-
-                  // -- App Settings
                   const SizedBox(height: ESizes.spaceBtwSections),
-                  const ESectionHeading(
-                    title: 'App Settings',
-                    showActionButton: false,
+
+                  // -- Admin Panel
+                  Obx(
+                    () => controller.isAdmin
+                        ? Column(
+                            children: [
+                              const ESectionHeading(
+                                title: 'Admin Panel',
+                                showActionButton: false,
+                              ),
+                              const SizedBox(height: ESizes.spaceBtwItems),
+                              ESettingsMenuTile(
+                                icon: Iconsax.add_circle,
+                                title: 'Add New Product',
+                                subTitle: 'Create and upload new products',
+                                onTap: () =>
+                                    Get.to(() => const AddProductScreen()),
+                              ),
+                              const SizedBox(height: ESizes.spaceBtwSections),
+                            ],
+                          )
+                        : const SizedBox.shrink(),
                   ),
-                  const SizedBox(height: ESizes.spaceBtwItems),
-                  const ESettingsMenuTile(
-                    icon: Iconsax.document_upload,
-                    title: 'Load Data',
-                    subTitle: 'Upload Data to your Cloud Firebase',
+                  const SizedBox(height: ESizes.spaceBtwSections),
+
+                  SizedBox(
+                    width: double.infinity,
+                    child: OutlinedButton(
+                      onPressed: () =>
+                          AuthenticationRepository.instance.logout(),
+                      child: const Text('Logout'),
+                    ),
                   ),
-                  ESettingsMenuTile(
-                    icon: Iconsax.location,
-                    title: 'Geolocation',
-                    subTitle: 'Set recommendation based on location',
-                    trailing: Switch(value: true, onChanged: (value) {}),
-                  ),
-                  ESettingsMenuTile(
-                    icon: Iconsax.security_user,
-                    title: 'Safe Mode',
-                    subTitle: 'Search result is safe for all ages',
-                    trailing: Switch(value: false, onChanged: (value) {}),
-                  ),
-                  ESettingsMenuTile(
-                    icon: Iconsax.image,
-                    title: 'HD Image Quality',
-                    subTitle: 'Set image quality to be seen',
-                    trailing: Switch(value: false, onChanged: (value) {}),
-                  ),
+                  const SizedBox(height: ESizes.spaceBtwSections * 2.5),
                 ],
               ),
             ),

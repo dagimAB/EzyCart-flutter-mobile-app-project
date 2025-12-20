@@ -3,16 +3,22 @@ import 'package:ezycart/common/widgets/images/e_circular_image.dart';
 import 'package:ezycart/common/widgets/texts/e_brand_title_with_verified_icon.dart';
 import 'package:ezycart/utils/constants/colors.dart';
 import 'package:ezycart/utils/constants/enums.dart';
-import 'package:ezycart/utils/constants/image_strings.dart';
 import 'package:ezycart/utils/constants/sizes.dart';
 import 'package:ezycart/utils/helpers/helper_functions.dart';
 import 'package:flutter/material.dart';
 
 class EBrandCard extends StatelessWidget {
-  const EBrandCard({super.key, this.onTap, required this.showBorder});
+  const EBrandCard({
+    super.key,
+    this.onTap,
+    required this.showBorder,
+    required this.title,
+    required this.image,
+  });
 
   final bool showBorder;
   final void Function()? onTap;
+  final String title, image;
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +36,7 @@ class EBrandCard extends StatelessWidget {
             Flexible(
               child: ECircularImage(
                 isNetworkImage: false,
-                image: EImages.clothIcon,
+                image: image,
                 backgroundColor: Colors.transparent,
                 overlayColor: isDark ? EColors.white : EColors.black,
               ),
@@ -43,8 +49,8 @@ class EBrandCard extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const EBrandTitleWithVerifiedIcon(
-                    title: 'Nike',
+                  EBrandTitleWithVerifiedIcon(
+                    title: title,
                     brandTextSize: TextSize.large,
                   ),
                   Text(

@@ -1,9 +1,7 @@
-
 /// This class conatains all the App Text in String Format
 library;
 
-class ETexts{
-
+class ETexts {
   // --Global Texts
 
   // --Onboarding Texts
@@ -11,15 +9,16 @@ class ETexts{
   static const String onBoardingTitle2 = "Select payment method";
   static const String onBoardingTitle3 = "Fast delivery at your door";
 
-  static const String onBoardingSubTitle1 = "Welcome to EzyCart, we help you to find the best products in a simple way - Your Perfect Product Awaits You";
-  static const String onBoardingSubTitle2 = "You can pay using multiple methods for your convenience";
-  static const String onBoardingSubTitle3 = "We deliver your products in a fast and secure way";
+  static const String onBoardingSubTitle1 =
+      "Welcome to EzyCart, we help you to find the best products in a simple way - Your Perfect Product Awaits You";
+  static const String onBoardingSubTitle2 =
+      "You can pay using multiple methods for your convenience";
+  static const String onBoardingSubTitle3 =
+      "We deliver your products in a fast and secure way";
 
   // --Home
   static const String homeAppbarTitle = "Good day for shopping";
   static const String homeAppbarSubtitle = "Explore more and shop more";
-  
-
 
   // -- Authentication Form Text
   static const String firstName = "First Name";
@@ -27,6 +26,7 @@ class ETexts{
   static const String email = "E-Mail";
   static const String password = "Password";
   static const String newPassword = "New Password";
+  static const String confirmPassword = "Confirm Password";
   static const String username = "Username";
   static const String phoneNo = "Phone Number";
   static const String rememberMe = "Remember Me";
@@ -67,12 +67,7 @@ class ETexts{
   static const String yourAccountCreatedSubTitle =
       "Welcome to Your Ultimate Shopping Destination: Your Account is Created, Unleash the Joy of Seamless Online Shopping!";
 
-
-
-      //-- home
-      static const String homeAppBarTitle = "Good day for shopping";
-      static const String homeAppBarSubTitle = "Explore more and shop more";
-
-
-
+  //-- home
+  static const String homeAppBarTitle = "Good day for shopping";
+  static const String homeAppBarSubTitle = "Explore more and shop more";
 }

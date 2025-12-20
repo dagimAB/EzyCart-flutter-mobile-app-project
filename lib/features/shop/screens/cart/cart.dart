@@ -1,4 +1,5 @@
 import 'package:ezycart/common/widgets/appbar/appbar.dart';
+import 'package:ezycart/features/shop/controllers/cart_controller.dart';
 import 'package:ezycart/features/shop/screens/cart/widgets/cart_items.dart';
 import 'package:ezycart/features/shop/screens/checkout/checkout.dart';
 import 'package:ezycart/utils/constants/sizes.dart';
@@ -10,21 +11,35 @@ class CartScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final controller = Get.put(CartController());
+
     return Scaffold(
       appBar: EAppBar(
         showBackArrow: true,
         title: Text('Cart', style: Theme.of(context).textTheme.headlineSmall),
       ),
-      body: const Padding(
-        padding: EdgeInsets.all(ESizes.defaultSpace),
-        child: ECartItems(),
-      ),
-      bottomNavigationBar: Padding(
-        padding: const EdgeInsets.all(ESizes.defaultSpace),
-        child: ElevatedButton(
-          onPressed: () => Get.to(() => const CheckoutScreen()),
-          child: const Text('Checkout \$256.0'),
-        ),
+      body: Obx(() {
+        if (controller.cartItems.isEmpty) {
+          return const Center(child: Text('Whoops! Cart is Empty.'));
+        } else {
+          return const Padding(
+            padding: EdgeInsets.all(ESizes.defaultSpace),
+            child: ECartItems(),
+          );
+        }
+      }),
+      bottomNavigationBar: Obx(
+        () => controller.cartItems.isEmpty
+            ? const SizedBox()
+            : Padding(
+                padding: const EdgeInsets.all(ESizes.defaultSpace),
+                child: ElevatedButton(
+                  onPressed: () => Get.to(() => const CheckoutScreen()),
+                  child: Text(
+                    'Checkout \$${controller.totalCartPrice.value.toStringAsFixed(1)}',
+                  ),
+                ),
+              ),
       ),
     );
   }

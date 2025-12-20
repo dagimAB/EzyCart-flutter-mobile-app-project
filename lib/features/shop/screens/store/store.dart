@@ -1,10 +1,9 @@
 import 'package:ezycart/common/widgets/appbar/appbar.dart';
-import 'package:ezycart/common/widgets/brands/brand_card.dart';
 import 'package:ezycart/common/widgets/custom_shapes/containers/search_container.dart';
-import 'package:ezycart/common/widgets/layouts/grid_layout.dart';
 import 'package:ezycart/common/widgets/products/cart/cart_menu_icon.dart';
-import 'package:ezycart/common/widgets/texts/section_heading.dart';
-import 'package:ezycart/features/shop/screens/brand/all_brands.dart';
+import 'package:ezycart/features/shop/controllers/category_controller.dart';
+import 'package:ezycart/features/shop/screens/cart/cart.dart';
+import 'package:ezycart/features/shop/screens/search/search.dart';
 import 'package:ezycart/features/shop/screens/store/widgets/category_tab.dart';
 import 'package:ezycart/utils/constants/colors.dart';
 import 'package:ezycart/utils/constants/sizes.dart';
@@ -17,90 +16,90 @@ class StoreScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return DefaultTabController(
-      length: 5,
-      child: Scaffold(
-        appBar: EAppBar(
-          title: Text(
-            'Store',
-            style: Theme.of(context).textTheme.headlineMedium,
+    final categoryController = CategoryController.instance;
+
+    return Obx(() {
+      if (categoryController.isLoading.value) {
+        return const Scaffold(body: Center(child: CircularProgressIndicator()));
+      }
+
+      if (categoryController.featuredCategories.isEmpty) {
+        return Scaffold(
+          appBar: EAppBar(
+            title: Text(
+              'Store',
+              style: Theme.of(context).textTheme.headlineMedium,
+            ),
           ),
-          actions: [
-            ECartCounterIcon(onPressed: () {}, iconColor: EColors.black),
-          ],
-        ),
-        body: NestedScrollView(
-          headerSliverBuilder: (_, innerBoxIsScrolled) {
-            return [
-              SliverAppBar(
-                automaticallyImplyLeading: false,
-                pinned: true,
-                floating: true,
-                backgroundColor: EHelperFunctions.isDarkMode(context)
-                    ? EColors.black
-                    : EColors.white,
-                expandedHeight: 440,
-                flexibleSpace: Padding(
-                  padding: const EdgeInsets.all(ESizes.defaultSpace),
-                  child: ListView(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    children: [
-                      // -- Search Bar
-                      const SizedBox(height: ESizes.spaceBtwItems),
-                      const ESearchContainer(
-                        text: 'Search in Store',
-                        showBorder: true,
-                        showBackground: false,
-                      ),
-                      const SizedBox(height: ESizes.spaceBtwSections),
+          body: const Center(child: Text('No Categories Found!')),
+        );
+      }
 
-                      // -- Featured Brands
-                      ESectionHeading(
-                        title: 'Featured Brands',
-                        onPressed: () => Get.to(() => const AllBrandsScreen()),
-                      ),
-                      const SizedBox(height: ESizes.spaceBtwItems / 1.5),
-
-                      EGridLayout(
-                        itemCount: 4,
-                        mainAxisExtent: 80,
-                        itemBuilder: (_, index) {
-                          return const EBrandCard(showBorder: true);
-                        },
-                      ),
-                    ],
-                  ),
-                ),
-
-                // -- Tabs
-                bottom: const TabBar(
-                  isScrollable: true,
-                  indicatorColor: EColors.primary,
-                  unselectedLabelColor: EColors.darkGrey,
-                  labelColor: EColors.primary,
-                  tabs: [
-                    Tab(child: Text('Sports')),
-                    Tab(child: Text('Furniture')),
-                    Tab(child: Text('Electronics')),
-                    Tab(child: Text('Clothes')),
-                    Tab(child: Text('Cosmetics')),
-                  ],
-                ),
+      return DefaultTabController(
+        length: categoryController.featuredCategories.length,
+        child: Scaffold(
+          appBar: EAppBar(
+            title: Text(
+              'Store',
+              style: Theme.of(context).textTheme.headlineMedium,
+            ),
+            actions: [
+              ECartCounterIcon(
+                onPressed: () => Get.to(() => const CartScreen()),
+                iconColor: EHelperFunctions.isDarkMode(context)
+                    ? EColors.white
+                    : EColors.black,
               ),
-            ];
-          },
-          body: const TabBarView(
-            children: [
-              ECategoryTab(),
-              ECategoryTab(),
-              ECategoryTab(),
-              ECategoryTab(),
-              ECategoryTab(),
             ],
           ),
+          body: NestedScrollView(
+            headerSliverBuilder: (_, innerBoxIsScrolled) {
+              return [
+                SliverAppBar(
+                  automaticallyImplyLeading: false,
+                  pinned: true,
+                  floating: true,
+                  backgroundColor: EHelperFunctions.isDarkMode(context)
+                      ? EColors.black
+                      : EColors.white,
+                  expandedHeight: 160, // Space for Search Bar
+                  flexibleSpace: Padding(
+                    padding: const EdgeInsets.all(ESizes.defaultSpace),
+                    child: ListView(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      children: [
+                        const SizedBox(height: ESizes.spaceBtwItems),
+                        ESearchContainer(
+                          text: 'Search in Store',
+                          showBorder: true,
+                          showBackground: false,
+                          onTap: () => Get.to(() => const SearchScreen()),
+                        ),
+                        const SizedBox(height: ESizes.spaceBtwSections),
+                      ],
+                    ),
+                  ),
+                  bottom: TabBar(
+                    isScrollable: true,
+                    indicatorColor: EColors.primary,
+                    unselectedLabelColor: EColors.darkGrey,
+                    labelColor: EColors.primary,
+                    tabs: categoryController.featuredCategories
+                        .map((category) => Tab(child: Text(category.name)))
+                        .toList(),
+                  ),
+                ),
+              ];
+            },
+            body: TabBarView(
+              children: categoryController.featuredCategories
+                  .map((category) => ECategoryTab(category: category))
+                  .toList(),
+            ),
+          ),
         ),
-      ),
-    );
+      );
+    });
   }
 }

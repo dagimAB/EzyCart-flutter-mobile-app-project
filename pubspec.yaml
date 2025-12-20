@@ -15,17 +15,25 @@ dependencies:
 
   #Utility packages
   http: ^1.1.0
+  flutter_dotenv: ^5.1.0
   intl: ^0.20.2
   logger: ^2.0.2
   url_launcher: ^6.1.12
+  image_picker: ^1.0.7
   carousel_slider: ^5.1.1
-  flutter_native_splash: ^2.3.2
   font_awesome_flutter: ^10.7.0
   smooth_page_indicator: ^1.1.0
 
   #Icons
   iconsax: ^0.0.8
   cupertino_icons: ^1.0.8
+
+  #Firebase
+  firebase_core: ^3.6.0
+  firebase_auth: ^5.3.1
+  cloud_firestore: ^5.4.4
+  firebase_storage: ^12.3.2
+  google_sign_in: ^6.2.1
 
   #State Management
   get: ^4.6.5
@@ -34,6 +42,7 @@ dependencies:
   #product specific
   readmore: ^3.0.0
   flutter_rating_bar: ^4.0.1
+  lottie: ^3.3.2
 
 #------------------PACKAGE END --------------#
 dev_dependencies:
@@ -47,6 +56,7 @@ flutter:
 
   #--------------LOCAL ASSETS---------------#
   assets:
+    - .env
     - assets/logos/
     - assets/icons/brands/
     - assets/images/banners/
@@ -54,6 +64,7 @@ flutter:
     - assets/images/animations/
     - assets/images/on_boarding_images/
     - assets/images/products/
+    - assets/icons/payment_methods/
 
   #------------------LOCAL FONTS-------------#
   fonts:

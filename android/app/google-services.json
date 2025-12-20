@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "189006121648",
+    "project_id": "ezycart-a1ba4",
+    "storage_bucket": "ezycart-a1ba4.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:189006121648:android:39a6f91f74fb12b836c975",
+        "android_client_info": {
+          "package_name": "com.example.ezycart"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "189006121648-hglp7mshe33ht7j251qkl62busv61h4n.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBubZ4k3MdO8f0DW7dbCUOHmInJs_CoXzk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "189006121648-hglp7mshe33ht7j251qkl62busv61h4n.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

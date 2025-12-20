@@ -22,9 +22,7 @@ class EPromoSlider extends StatelessWidget {
             viewportFraction: 1,
             onPageChanged: (index, _) => controller.updatePageIndicator(index),
           ),
-          items: banners
-              .map((banner) => ERoundedImage(imageUrl: banner))
-              .toList(),
+          items: banners.map((url) => ERoundedImage(imageUrl: url)).toList(),
         ),
         const SizedBox(height: ESizes.spaceBtwItems),
         Center(
@@ -36,12 +34,10 @@ class EPromoSlider extends StatelessWidget {
                   ECircularContainer(
                     width: 20,
                     height: 4,
+                    margin: const EdgeInsets.only(right: 10),
                     backgroundColor: controller.carousalCurrentIndex.value == i
                         ? EColors.primary
                         : EColors.grey,
-                    margin: const EdgeInsets.only(
-                      right: ESizes.spaceBtwItems / 2,
-                    ),
                   ),
               ],
             ),

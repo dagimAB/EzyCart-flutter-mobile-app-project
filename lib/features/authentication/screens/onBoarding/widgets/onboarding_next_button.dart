@@ -1,4 +1,5 @@
 import 'package:ezycart/features/authentication/controllers/onboarding/onboarding_controller.dart';
+import 'package:get/get.dart';
 import 'package:ezycart/utils/constants/colors.dart';
 import 'package:ezycart/utils/constants/sizes.dart';
 import 'package:ezycart/utils/device/device_utility.dart';
@@ -17,7 +18,12 @@ class OnBoardingNextButton extends StatelessWidget {
       right: ESizes.defaultSpacing,
       bottom: EDeviceUtils.getBottomNavigationBarHeight(),
       child: ElevatedButton(
-        onPressed: () =>OnBoardingController.instance.nextPage(),
+        onPressed: () {
+          final controller = Get.isRegistered<OnBoardingController>()
+              ? OnBoardingController.instance
+              : Get.put(OnBoardingController());
+          controller.nextPage();
+        },
         style: ElevatedButton.styleFrom(
           shape: const CircleBorder(),
           backgroundColor: dark ? EColors.primary : Colors.black,

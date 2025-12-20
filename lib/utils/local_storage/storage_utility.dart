@@ -3,7 +3,7 @@ import 'package:get_storage/get_storage.dart';
 class ELocalStorage {
   static final ELocalStorage _instance = ELocalStorage._internal();
 
-  factory ELocalStorage() {
+  static ELocalStorage instance() {
     return _instance;
   }
 
@@ -20,8 +20,8 @@ class ELocalStorage {
   T? readData<T>(String key) {
     return _storage.read<T>(key);
   }
- 
- // Generic method to remove data
+
+  // Generic method to remove data
   Future<void> removeData(String key) async {
     await _storage.remove(key);
   }
@@ -30,6 +30,4 @@ class ELocalStorage {
   Future<void> clearAll() async {
     await _storage.erase();
   }
-
-
 }

@@ -13,7 +13,6 @@ class EPrimaryHeaderContainer extends StatelessWidget {
     return ECurvedEdgesWidget(
       child: Container(
         color: EColors.primary,
-        height: 320,
         padding: const EdgeInsets.only(bottom: 0),
         child: Stack(
           children: [
