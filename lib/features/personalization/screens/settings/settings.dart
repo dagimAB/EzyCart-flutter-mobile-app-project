@@ -115,7 +115,7 @@ class SettingsScreen extends StatelessWidget {
                     width: double.infinity,
                     child: OutlinedButton(
                       onPressed: () =>
-                          AuthenticationRepository.instance.logout(),
+                          AuthenticationRepository.instance.confirmAndLogout(),
                       child: const Text('Logout'),
                     ),
                   ),

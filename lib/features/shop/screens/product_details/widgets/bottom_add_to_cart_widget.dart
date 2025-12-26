@@ -68,24 +68,36 @@ class EBottomAddToCart extends StatelessWidget {
             ElevatedButton(
               onPressed: controller.productQuantityInCart.value < 1
                   ? null
-                  : () => controller.addToCart(
-                      CartItemModel(
-                        productId: product.id,
-                        quantity: controller.productQuantityInCart.value,
-                        variationId: '',
-                        image: product.image,
-                        title: product.title,
-                        brandName: product.brand?.name,
-                        price: product.salePrice ?? product.price,
-                        selectedVariation: null,
-                      ),
-                    ),
+                  : () async {
+                      controller.addToCart(
+                        CartItemModel(
+                          productId: product.id,
+                          quantity: controller.productQuantityInCart.value,
+                          variationId: '',
+                          image: product.image,
+                          title: product.title,
+                          brandName: product.brand?.name,
+                          price: product.salePrice ?? product.price,
+                          selectedVariation: null,
+                        ),
+                      );
+                      // Ensure local product count is refreshed
+                      controller.updateAlreadyAddedProductCount(product.id);
+                    },
               style: ElevatedButton.styleFrom(
                 padding: const EdgeInsets.all(ESizes.md),
-                backgroundColor: EColors.black,
-                side: const BorderSide(color: EColors.black),
+                backgroundColor: controller.productQuantityInCart.value > 0
+                    ? EColors.success
+                    : EColors.black,
+                side: BorderSide(
+                  color: controller.productQuantityInCart.value > 0
+                      ? EColors.success
+                      : EColors.black,
+                ),
               ),
-              child: const Text('Add to Cart'),
+              child: controller.productQuantityInCart.value > 0
+                  ? const Text('Added')
+                  : const Text('Add to Cart'),
             ),
           ],
         ),

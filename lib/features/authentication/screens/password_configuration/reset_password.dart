@@ -6,17 +6,60 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class ResetPassword extends StatelessWidget {
-  const ResetPassword({super.key});
+// Added imports for password reset resend + navigation
+import 'package:ezycart/data/repositories/authentication/authentication_repository.dart';
+import 'package:ezycart/utils/popups/loaders.dart';
+import 'package:ezycart/features/authentication/screens/login/login.dart';
+
+class ResetPassword extends StatefulWidget {
+  const ResetPassword({super.key, this.email});
+
+  final String? email;
+
+  @override
+  State<ResetPassword> createState() => _ResetPasswordState();
+}
+
+class _ResetPasswordState extends State<ResetPassword> {
+  bool _loading = false;
+
+  Future<void> _resend() async {
+    final email = widget.email;
+    if (email == null || email.isEmpty) {
+      ELoaders.warningSnackBar(
+        title: 'Missing',
+        message: 'No email available to resend',
+      );
+      return;
+    }
+
+    try {
+      setState(() => _loading = true);
+      await AuthenticationRepository.instance.sendPasswordResetEmail(email);
+      ELoaders.successSnackBar(
+        title: ETexts.changeYourPasswordTitle,
+        message: 'Password reset email sent',
+      );
+    } catch (e) {
+      ELoaders.errorSnackBar(title: 'Error', message: e.toString());
+    } finally {
+      setState(() => _loading = false);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        actions: [IconButton(onPressed: () => Get.back(), icon: const Icon(CupertinoIcons.clear))],
+        actions: [
+          IconButton(
+            onPressed: () => Get.back(),
+            icon: const Icon(CupertinoIcons.clear),
+          ),
+        ],
       ),
-      body:  SingleChildScrollView(
+      body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(ESizes.defaultSpacing),
           child: Column(
@@ -43,7 +86,7 @@ class ResetPassword extends StatelessWidget {
               const SizedBox(height: ESizes.spaceBtwSections),
 
               Text(
-                ETexts.changeYourPasswordSubTitle,
+                widget.email ?? ETexts.changeYourPasswordSubTitle,
                 style: Theme.of(context).textTheme.labelMedium,
                 textAlign: TextAlign.center,
               ),
@@ -53,7 +96,7 @@ class ResetPassword extends StatelessWidget {
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
-                  onPressed: () {},
+                  onPressed: () => Get.offAll(() => const LoginScreen()),
                   child: Text(ETexts.done),
                 ),
               ),
@@ -61,14 +104,14 @@ class ResetPassword extends StatelessWidget {
               SizedBox(
                 width: double.infinity,
                 child: TextButton(
-                  onPressed: () {},
-                  child: Text(ETexts.resendEmail),
+                  onPressed: _loading ? null : _resend,
+                  child: _loading
+                      ? const CircularProgressIndicator()
+                      : Text(ETexts.resendEmail),
                 ),
               ),
-
-
             ],
-            ),
+          ),
         ),
       ),
     );

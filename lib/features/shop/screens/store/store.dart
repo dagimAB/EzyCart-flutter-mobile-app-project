@@ -39,6 +39,7 @@ class StoreScreen extends StatelessWidget {
         length: categoryController.featuredCategories.length,
         child: Scaffold(
           appBar: EAppBar(
+            showBackArrow: false,
             title: Text(
               'Store',
               style: Theme.of(context).textTheme.headlineMedium,

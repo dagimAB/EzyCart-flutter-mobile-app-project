@@ -119,43 +119,56 @@ class EProductCardHorizontal extends StatelessWidget {
                           child: EProductPriceText(price: '256.0'),
                         ),
 
-                        // Add to cart
-                        InkWell(
-                          onTap: () {
-                            final cartItem = CartItemModel(
-                              productId: product.id,
-                              quantity: 1,
-                              variationId: '',
-                              image: product.thumbnail,
-                              title: product.title,
-                              brandName: product.brand?.name,
-                              price: product.salePrice ?? product.price,
-                              selectedVariation: null,
-                            );
-                            cartController.addToCart(cartItem);
-                            ELoaders.customToast(
-                              message: 'Product added to cart',
-                            );
-                          },
-                          child: Container(
-                            decoration: const BoxDecoration(
-                              color: EColors.dark,
-                              borderRadius: BorderRadius.only(
-                                topLeft: Radius.circular(ESizes.cardRadiusMd),
-                                bottomRight: Radius.circular(
-                                  ESizes.productImageRadius,
+                        // Add to cart (reactive color)
+                        Obx(() {
+                          final added =
+                              cartController.getProductQuantityInCart(
+                                product.id,
+                              ) >
+                              0;
+                          return InkWell(
+                            onTap: () {
+                              final cartItem = CartItemModel(
+                                productId: product.id,
+                                quantity: 1,
+                                variationId: '',
+                                image: product.thumbnail,
+                                title: product.title,
+                                brandName: product.brand?.name,
+                                price: product.salePrice ?? product.price,
+                                selectedVariation: null,
+                              );
+                              cartController.addToCart(cartItem);
+                              cartController.updateAlreadyAddedProductCount(
+                                product.id,
+                              );
+                              ELoaders.customToast(
+                                message: 'Product added to cart',
+                              );
+                            },
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: added ? EColors.success : EColors.dark,
+                                borderRadius: const BorderRadius.only(
+                                  topLeft: Radius.circular(ESizes.cardRadiusMd),
+                                  bottomRight: Radius.circular(
+                                    ESizes.productImageRadius,
+                                  ),
+                                ),
+                              ),
+                              child: SizedBox(
+                                width: ESizes.iconLg * 1.2,
+                                height: ESizes.iconLg * 1.2,
+                                child: Center(
+                                  child: Icon(
+                                    added ? Iconsax.tick_circle : Iconsax.add,
+                                    color: EColors.white,
+                                  ),
                                 ),
                               ),
                             ),
-                            child: const SizedBox(
-                              width: ESizes.iconLg * 1.2,
-                              height: ESizes.iconLg * 1.2,
-                              child: Center(
-                                child: Icon(Iconsax.add, color: EColors.white),
-                              ),
-                            ),
-                          ),
-                        ),
+                          );
+                        }),
                       ],
                     ),
                   ],

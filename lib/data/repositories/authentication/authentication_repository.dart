@@ -3,6 +3,7 @@ import 'package:ezycart/features/authentication/screens/onBoarding/onboarding.da
 import 'package:ezycart/navigation_menu.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
@@ -100,6 +101,17 @@ class AuthenticationRepository extends GetxController {
     }
   }
 
+  /// Send password reset email to the provided [email]
+  Future<void> sendPasswordResetEmail(String email) async {
+    try {
+      await _auth.sendPasswordResetEmail(email: email);
+    } on FirebaseAuthException catch (e) {
+      throw e.message!;
+    } catch (e) {
+      throw 'Something went wrong. Please try again';
+    }
+  }
+
   /// [GoogleAuthentication] - GOOGLE
   Future<UserCredential?> signInWithGoogle() async {
     try {
@@ -138,5 +150,30 @@ class AuthenticationRepository extends GetxController {
     } catch (e) {
       throw 'Something went wrong. Please try again';
     }
+  }
+
+  /// Show a confirmation dialog before logging out. Use this to ensure
+  /// a consistent logout confirmation across the app.
+  void confirmAndLogout({
+    String title = 'Logout',
+    String middleText = 'Are you sure you want to logout?',
+    String textCancel = 'Cancel',
+    String textConfirm = 'Logout',
+  }) {
+    Get.defaultDialog(
+      title: title,
+      middleText: middleText,
+      textCancel: textCancel,
+      textConfirm: textConfirm,
+      confirmTextColor: Colors.white,
+      onConfirm: () async {
+        try {
+          await logout();
+        } catch (e) {
+          // Show brief error and remain on screen
+          Get.snackbar('Error', e.toString());
+        }
+      },
+    );
   }
 }

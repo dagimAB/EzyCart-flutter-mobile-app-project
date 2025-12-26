@@ -15,7 +15,7 @@ class CartScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: EAppBar(
-        showBackArrow: true,
+        showBackArrow: false,
         title: Text('Cart', style: Theme.of(context).textTheme.headlineSmall),
       ),
       body: Obx(() {

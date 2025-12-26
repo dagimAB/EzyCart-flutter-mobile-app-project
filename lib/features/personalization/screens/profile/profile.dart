@@ -17,7 +17,7 @@ class ProfileScreen extends StatelessWidget {
     final controller = UserController.instance;
 
     return Scaffold(
-      appBar: const EAppBar(showBackArrow: true, title: Text('Profile')),
+      appBar: const EAppBar(showBackArrow: false, title: Text('Profile')),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(ESizes.defaultSpace),

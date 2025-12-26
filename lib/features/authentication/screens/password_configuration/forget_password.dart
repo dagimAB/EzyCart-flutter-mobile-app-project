@@ -5,8 +5,51 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
 
-class ForgetPassword extends StatelessWidget {
+// Added imports for password reset flow
+import 'package:ezycart/data/repositories/authentication/authentication_repository.dart';
+import 'package:ezycart/utils/popups/loaders.dart';
+
+class ForgetPassword extends StatefulWidget {
   const ForgetPassword({super.key});
+
+  @override
+  State<ForgetPassword> createState() => _ForgetPasswordState();
+}
+
+class _ForgetPasswordState extends State<ForgetPassword> {
+  final TextEditingController _emailController = TextEditingController();
+  bool _loading = false;
+
+  @override
+  void dispose() {
+    _emailController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _submit() async {
+    final email = _emailController.text.trim();
+    if (email.isEmpty) {
+      ELoaders.warningSnackBar(
+        title: 'Invalid',
+        message: 'Please enter your email',
+      );
+      return;
+    }
+
+    try {
+      setState(() => _loading = true);
+      await AuthenticationRepository.instance.sendPasswordResetEmail(email);
+      ELoaders.successSnackBar(
+        title: 'Email Sent',
+        message: 'Password reset email has been sent',
+      );
+      Get.off(() => ResetPassword(email: email));
+    } catch (e) {
+      ELoaders.errorSnackBar(title: 'Error', message: e.toString());
+    } finally {
+      setState(() => _loading = false);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -16,7 +59,7 @@ class ForgetPassword extends StatelessWidget {
         padding: EdgeInsets.all(ESizes.defaultSpacing),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: [ 
+          children: [
             // Headings
             Text(
               ETexts.forgetPasswordTitle,
@@ -31,19 +74,22 @@ class ForgetPassword extends StatelessWidget {
 
             // Text field
             TextFormField(
+              controller: _emailController,
               decoration: const InputDecoration(
                 labelText: ETexts.email,
                 prefixIcon: Icon(Iconsax.direct_right),
               ),
-            ), 
+            ),
             const SizedBox(height: ESizes.spaceBtwSections),
 
             /// submit button
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
-                onPressed: () => Get.off(() => const ResetPassword()),
-                child: const Text(ETexts.submit),
+                onPressed: _loading ? null : _submit,
+                child: _loading
+                    ? const CircularProgressIndicator(color: Colors.white)
+                    : const Text(ETexts.submit),
               ),
             ),
           ],
