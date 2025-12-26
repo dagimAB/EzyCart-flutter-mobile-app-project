@@ -6,6 +6,7 @@ import 'package:ezycart/utils/constants/text_strings.dart';
 import 'package:ezycart/utils/popups/loaders.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
+import 'package:ezycart/utils/errors/error_handler.dart';
 
 class VerifyEmailController extends GetxController {
   static VerifyEmailController get instance => Get.find();
@@ -27,7 +28,11 @@ class VerifyEmailController extends GetxController {
         message: 'Please Check your inbox and verify your email.',
       );
     } catch (e) {
-      ELoaders.errorSnackBar(title: 'Oh Snap!', message: e.toString());
+      ErrorHandler.showError(
+        error: e,
+        title: 'Oh Snap!',
+        fallbackMessage: 'Could not verify email.',
+      );
     }
   }
 

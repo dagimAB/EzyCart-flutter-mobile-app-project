@@ -1,6 +1,5 @@
 import 'package:ezycart/common/widgets/appbar/appbar.dart';
 import 'package:ezycart/common/widgets/custom_shapes/curved_edges/curved_edges_widget.dart';
-import 'package:ezycart/common/widgets/images/e_rounded_image.dart';
 import 'package:ezycart/utils/constants/colors.dart';
 import 'package:ezycart/utils/constants/sizes.dart';
 import 'package:ezycart/utils/helpers/helper_functions.dart';

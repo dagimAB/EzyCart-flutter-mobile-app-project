@@ -43,7 +43,37 @@ class ProfileScreen extends StatelessWidget {
                             );
                     }),
                     TextButton(
-                      onPressed: () => controller.uploadUserProfilePicture(),
+                      onPressed: () => showModalBottomSheet(
+                        context: context,
+                        builder: (_) => SafeArea(
+                          child: Wrap(
+                            children: [
+                              ListTile(
+                                leading: const Icon(Icons.cloud_upload),
+                                title: const Text('Upload to Cloudinary'),
+                                onTap: () {
+                                  Get.back();
+                                  controller
+                                      .uploadUserProfilePictureToCloudinary();
+                                },
+                              ),
+                              ListTile(
+                                leading: const Icon(Icons.storage),
+                                title: const Text('Upload to Firebase Storage'),
+                                onTap: () {
+                                  Get.back();
+                                  controller.uploadUserProfilePicture();
+                                },
+                              ),
+                              ListTile(
+                                leading: const Icon(Icons.close),
+                                title: const Text('Cancel'),
+                                onTap: () => Get.back(),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
                       child: const Text('Change Profile Picture'),
                     ),
                   ],
@@ -107,7 +137,7 @@ class ProfileScreen extends StatelessWidget {
                 () => EProfileMenu(
                   onPressed: () {},
                   title: 'Phone Number',
-                  value: controller.user.value?.phoneNumber ?? '',
+                  value: controller.user.value.phoneNumber,
                 ),
               ),
               EProfileMenu(onPressed: () {}, title: 'Gender', value: 'Male'),

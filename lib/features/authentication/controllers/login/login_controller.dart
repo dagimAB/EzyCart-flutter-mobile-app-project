@@ -1,9 +1,9 @@
 import 'package:ezycart/data/repositories/authentication/authentication_repository.dart';
 import 'package:ezycart/data/repositories/user/user_repository.dart';
 import 'package:ezycart/features/personalization/models/user_model.dart';
-import 'package:ezycart/utils/popups/loaders.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:ezycart/utils/errors/error_handler.dart';
 
 class LoginController extends GetxController {
   static LoginController get instance => Get.find();
@@ -42,7 +42,12 @@ class LoginController extends GetxController {
       AuthenticationRepository.instance.screenRedirect();
     } catch (e) {
       isLoading.value = false;
-      ELoaders.errorSnackBar(title: 'Oh Snap!', message: e.toString());
+      ErrorHandler.showError(
+        error: e,
+        title: 'Oh Snap!',
+        fallbackMessage:
+            'Login failed. Please check your credentials and connection.',
+      );
     }
   }
 
@@ -85,7 +90,11 @@ class LoginController extends GetxController {
       isLoading.value = false;
     } catch (e) {
       isLoading.value = false;
-      ELoaders.errorSnackBar(title: 'Oh Snap!', message: e.toString());
+      ErrorHandler.showError(
+        error: e,
+        title: 'Oh Snap!',
+        fallbackMessage: 'Google sign-in failed.',
+      );
     }
   }
 }

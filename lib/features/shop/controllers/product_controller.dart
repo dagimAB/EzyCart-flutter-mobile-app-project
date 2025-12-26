@@ -1,7 +1,7 @@
 import 'package:ezycart/data/repositories/product/product_repository.dart';
 import 'package:ezycart/features/shop/models/product_model.dart';
-import 'package:ezycart/utils/popups/loaders.dart';
 import 'package:get/get.dart';
+import 'package:ezycart/utils/errors/error_handler.dart';
 
 class ProductController extends GetxController {
   static ProductController get instance => Get.find();
@@ -27,7 +27,12 @@ class ProductController extends GetxController {
       // Assign Products
       featuredProducts.assignAll(products);
     } catch (e) {
-      ELoaders.errorSnackBar(title: 'Oh Snap!', message: e.toString());
+      ErrorHandler.showError(
+        error: e,
+        title: 'Oh Snap!',
+        fallbackMessage:
+            'Failed to load featured products. Check your internet connection and try again.',
+      );
     } finally {
       isLoading.value = false;
     }
@@ -39,7 +44,11 @@ class ProductController extends GetxController {
       final products = await productRepository.getAllFeaturedProducts();
       return products;
     } catch (e) {
-      ELoaders.errorSnackBar(title: 'Oh Snap!', message: e.toString());
+      ErrorHandler.showError(
+        error: e,
+        title: 'Oh Snap!',
+        fallbackMessage: 'Failed to retrieve featured products.',
+      );
       return [];
     }
   }
@@ -53,7 +62,11 @@ class ProductController extends GetxController {
       );
       return products;
     } catch (e) {
-      ELoaders.errorSnackBar(title: 'Oh Snap!', message: e.toString());
+      ErrorHandler.showError(
+        error: e,
+        title: 'Oh Snap!',
+        fallbackMessage: 'Failed to retrieve products for this category.',
+      );
       return [];
     }
   }

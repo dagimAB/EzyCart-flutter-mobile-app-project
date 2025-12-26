@@ -8,6 +8,7 @@ import 'package:ezycart/utils/constants/sizes.dart';
 import 'package:ezycart/utils/helpers/cloud_helper_functions.dart';
 import 'package:ezycart/utils/popups/full_screen_loader.dart';
 import 'package:ezycart/utils/popups/loaders.dart';
+import 'package:ezycart/utils/errors/error_handler.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -37,7 +38,12 @@ class AddressController extends GetxController {
       );
       return addresses;
     } catch (e) {
-      ELoaders.errorSnackBar(title: 'Address not found', message: e.toString());
+      ErrorHandler.showError(
+        error: e,
+        title: 'Address not found',
+        fallbackMessage:
+            'Could not load addresses. Please check your connection.',
+      );
       return [];
     }
   }
@@ -62,9 +68,10 @@ class AddressController extends GetxController {
         true,
       );
     } catch (e) {
-      ELoaders.errorSnackBar(
-        title: 'Error in Selection',
-        message: 'Could not select address. Please try again.',
+      ErrorHandler.showError(
+        error: e,
+        title: 'Selection Failed',
+        fallbackMessage: 'Could not select address. Please try again.',
       );
     }
   }
@@ -123,7 +130,11 @@ class AddressController extends GetxController {
     } catch (e) {
       // Remove Loader
       EFullScreenLoader.stopLoading();
-      ELoaders.errorSnackBar(title: 'Address not found', message: e.toString());
+      ErrorHandler.showError(
+        error: e,
+        title: 'Address save failed',
+        fallbackMessage: 'Could not save address. Please try again.',
+      );
     }
   }
 

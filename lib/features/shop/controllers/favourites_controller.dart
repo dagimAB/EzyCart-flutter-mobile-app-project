@@ -22,10 +22,17 @@ class FavouritesController extends GetxController {
     final json = GetStorage().read('favorites');
     if (json != null) {
       try {
-        final storedFavorites = jsonDecode(json) as Map<String, dynamic>;
-        favorites.assignAll(
-          storedFavorites.map((key, value) => MapEntry(key, value as bool)),
-        );
+        // Check if json is already a Map (GetStorage sometimes stores it as object)
+        if (json is Map) {
+          favorites.assignAll(
+            json.map((key, value) => MapEntry(key.toString(), value as bool)),
+          );
+        } else if (json is String) {
+          final storedFavorites = jsonDecode(json) as Map<String, dynamic>;
+          favorites.assignAll(
+            storedFavorites.map((key, value) => MapEntry(key, value as bool)),
+          );
+        }
       } catch (e) {
         // If storage is corrupted, clear it to prevent crashes
         GetStorage().remove('favorites');
@@ -55,11 +62,16 @@ class FavouritesController extends GetxController {
   }
 
   void saveFavoritesToStorage() {
-    final encodedFavorites = jsonEncode(favorites);
-    GetStorage().write('favorites', encodedFavorites);
+    if (favorites.isEmpty) {
+      GetStorage().remove('favorites');
+    } else {
+      final encodedFavorites = jsonEncode(favorites);
+      GetStorage().write('favorites', encodedFavorites);
+    }
   }
 
   Future<List<ProductModel>> favoriteProducts() async {
+    if (favorites.isEmpty) return [];
     return await ProductRepository.instance.getFavouriteProducts(
       favorites.keys.toList(),
     );

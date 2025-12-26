@@ -1,7 +1,7 @@
 import 'package:ezycart/data/repositories/categories/category_repository.dart';
 import 'package:ezycart/features/shop/models/category_model.dart';
-import 'package:ezycart/utils/popups/loaders.dart';
 import 'package:get/get.dart';
+import 'package:ezycart/utils/errors/error_handler.dart';
 
 class CategoryController extends GetxController {
   static CategoryController get instance => Get.find();
@@ -39,7 +39,11 @@ class CategoryController extends GetxController {
             .toList(),
       );
     } catch (e) {
-      ELoaders.errorSnackBar(title: 'Oh Snap!', message: e.toString());
+      ErrorHandler.showError(
+        error: e,
+        title: 'Oh Snap!',
+        fallbackMessage: 'Failed to load categories.',
+      );
     } finally {
       // Remove Loader
       isLoading.value = false;

@@ -3,6 +3,7 @@ import 'package:ezycart/data/repositories/user/user_repository.dart';
 import 'package:ezycart/features/authentication/screens/signup/verify_email.dart';
 import 'package:ezycart/features/personalization/models/user_model.dart';
 import 'package:ezycart/utils/popups/loaders.dart';
+import 'package:ezycart/utils/errors/error_handler.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -70,7 +71,12 @@ class SignupController extends GetxController {
       Get.to(() => VerifyEmailScreen(email: email.text.trim()));
     } catch (e) {
       isLoading.value = false;
-      ELoaders.errorSnackBar(title: 'Oh Snap!', message: e.toString());
+      ErrorHandler.showError(
+        error: e,
+        title: 'Oh Snap!',
+        fallbackMessage:
+            'Signup failed. Please check your network and try again.',
+      );
     }
   }
 
@@ -113,7 +119,11 @@ class SignupController extends GetxController {
       isLoading.value = false;
     } catch (e) {
       isLoading.value = false;
-      ELoaders.errorSnackBar(title: 'Oh Snap!', message: e.toString());
+      ErrorHandler.showError(
+        error: e,
+        title: 'Oh Snap!',
+        fallbackMessage: 'Google sign-in failed.',
+      );
     }
   }
 }

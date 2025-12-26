@@ -42,9 +42,14 @@ class _SplashScreenState extends State<SplashScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Image.asset(
-              dark ? EImages.lightAppLogo : EImages.darkAppLogo,
-              width: Get.width * 0.5,
+            ClipRRect(
+              borderRadius: BorderRadius.circular(
+                20,
+              ), // Adjust radius as needed
+              child: Image.asset(
+                dark ? EImages.lightAppLogo : EImages.darkAppLogo,
+                width: Get.width * 0.5,
+              ),
             ),
             const SizedBox(height: ESizes.spaceBtwSections),
             const CircularProgressIndicator(color: EColors.primary),

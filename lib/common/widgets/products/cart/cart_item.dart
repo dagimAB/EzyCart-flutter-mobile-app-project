@@ -22,7 +22,8 @@ class ECartItem extends StatelessWidget {
           imageUrl: cartItem.image ?? EImages.productImage1,
           width: 60,
           height: 60,
-          isNetworkImage: cartItem.image != null,
+          isNetworkImage:
+              cartItem.image != null && cartItem.image!.startsWith('http'),
           padding: const EdgeInsets.all(ESizes.sm),
           backgroundColor: EHelperFunctions.isDarkMode(context)
               ? EColors.darkerGrey

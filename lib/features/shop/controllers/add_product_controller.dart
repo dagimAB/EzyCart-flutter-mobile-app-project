@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:ezycart/features/shop/models/brand_model.dart';
 import 'package:ezycart/features/shop/models/category_model.dart';
@@ -7,10 +6,10 @@ import 'package:ezycart/utils/constants/image_strings.dart';
 import 'package:ezycart/utils/popups/full_screen_loader.dart';
 import 'package:ezycart/utils/popups/loaders.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:flutter/foundation.dart'; // For kIsWeb
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:ezycart/utils/errors/error_handler.dart';
 
 class AddProductController extends GetxController {
   static AddProductController get instance => Get.find();
@@ -43,7 +42,12 @@ class AddProductController extends GetxController {
         selectedImage.value = image;
       }
     } catch (e) {
-      ELoaders.errorSnackBar(title: 'Oh Snap!', message: e.toString());
+      ErrorHandler.showError(
+        error: e,
+        title: 'Oh Snap!',
+        fallbackMessage:
+            'Failed to pick image. Please check your permissions and try again.',
+      );
     }
   }
 
@@ -134,7 +138,11 @@ class AddProductController extends GetxController {
       Get.back();
     } catch (e) {
       EFullScreenLoader.stopLoading();
-      ELoaders.errorSnackBar(title: 'Oh Snap!', message: e.toString());
+      ErrorHandler.showError(
+        error: e,
+        title: 'Oh Snap!',
+        fallbackMessage: 'Could not save product. Please try again.',
+      );
     }
   }
 

@@ -1,6 +1,5 @@
 import 'package:ezycart/common/widgets/layouts/grid_layout.dart';
 import 'package:ezycart/common/widgets/products/product_cards/product_card_vertical.dart';
-import 'package:ezycart/common/widgets/texts/section_heading.dart';
 import 'package:ezycart/features/shop/controllers/product_controller.dart';
 import 'package:ezycart/features/shop/models/category_model.dart';
 import 'package:ezycart/features/shop/models/product_model.dart';
@@ -26,10 +25,10 @@ class ECategoryTab extends StatelessWidget {
               // -- Brands (Removed as per request)
 
               // -- Products
-              const ESectionHeading(
-                title: 'You might like',
-                showActionButton: true,
-              ),
+              // const ESectionHeading(
+              //   title: 'You might like',
+              //   showActionButton: true,
+              // ),
               const SizedBox(height: ESizes.spaceBtwItems),
 
               FutureBuilder(

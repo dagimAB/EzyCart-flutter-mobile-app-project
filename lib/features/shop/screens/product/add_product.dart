@@ -162,7 +162,7 @@ class AddProductScreen extends StatelessWidget {
                       labelText: 'Category',
                       prefixIcon: Icon(Iconsax.category),
                     ),
-                    value: controller.selectedCategory.value,
+                    initialValue: controller.selectedCategory.value,
                     onChanged: (newValue) =>
                         controller.selectedCategory.value = newValue,
                     items: categoryController.allCategories.map((category) {

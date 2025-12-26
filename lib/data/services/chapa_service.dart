@@ -1,6 +1,6 @@
 import 'dart:convert';
 // ignore: avoid_web_libraries_in_flutter
-import 'dart:html' as html;
+// import 'dart:html' as html;
 import 'package:flutter/foundation.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
@@ -33,16 +33,16 @@ class ChapaService {
   }) async {
     // On Web, use HTML Form POST to bypass CORS if no proxy is configured
     if (kIsWeb && proxyInitializeUrl.isEmpty) {
-      _webFormPost(
-        amount: amount,
-        currency: currency,
-        email: email,
-        firstName: firstName,
-        lastName: lastName,
-        txRef: txRef,
-        title: title,
-        description: description,
-      );
+      // _webFormPost(
+      //   amount: amount,
+      //   currency: currency,
+      //   email: email,
+      //   firstName: firstName,
+      //   lastName: lastName,
+      //   txRef: txRef,
+      //   title: title,
+      //   description: description,
+      // );
       return null; // Form submission handles redirection
     }
 
@@ -106,45 +106,45 @@ class ChapaService {
     }
   }
 
-  static void _webFormPost({
-    required String amount,
-    required String currency,
-    required String email,
-    required String firstName,
-    required String lastName,
-    required String txRef,
-    String? title,
-    String? description,
-  }) {
-    final form = html.FormElement()
-      ..method = 'POST'
-      ..action = 'https://api.chapa.co/v1/hosted/pay'
-      ..style.display = 'none';
+  // static void _webFormPost({
+  //   required String amount,
+  //   required String currency,
+  //   required String email,
+  //   required String firstName,
+  //   required String lastName,
+  //   required String txRef,
+  //   String? title,
+  //   String? description,
+  // }) {
+  //   final form = html.FormElement()
+  //     ..method = 'POST'
+  //     ..action = 'https://api.chapa.co/v1/hosted/pay'
+  //     ..style.display = 'none';
 
-    void addInput(String name, String value) {
-      final input = html.InputElement()
-        ..type = 'hidden'
-        ..name = name
-        ..value = value;
-      form.append(input);
-    }
+  //   void addInput(String name, String value) {
+  //     final input = html.InputElement()
+  //       ..type = 'hidden'
+  //       ..name = name
+  //       ..value = value;
+  //     form.append(input);
+  //   }
 
-    addInput('public_key', publicKey);
-    addInput('tx_ref', txRef);
-    addInput('amount', amount);
-    addInput('currency', currency);
-    addInput('email', email);
-    addInput('first_name', firstName);
-    addInput('last_name', lastName);
-    addInput('return_url', 'https://yoursite.com/payment-success');
+  //   addInput('public_key', publicKey);
+  //   addInput('tx_ref', txRef);
+  //   addInput('amount', amount);
+  //   addInput('currency', currency);
+  //   addInput('email', email);
+  //   addInput('first_name', firstName);
+  //   addInput('last_name', lastName);
+  //   addInput('return_url', 'https://yoursite.com/payment-success');
 
-    if (title != null) addInput('title', title);
-    if (description != null) addInput('description', description);
+  //   if (title != null) addInput('title', title);
+  //   if (description != null) addInput('description', description);
 
-    html.document.body!.append(form);
-    form.submit();
-    form.remove();
-  }
+  //   html.document.body!.append(form);
+  //   form.submit();
+  //   form.remove();
+  // }
 
   static Future<void> launchPaymentUrl(String urlString) async {
     final Uri url = Uri.parse(urlString);

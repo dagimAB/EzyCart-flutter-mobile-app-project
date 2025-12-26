@@ -1,0 +1,40 @@
+import 'dart:convert';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:http/http.dart' as http;
+
+class CloudinaryService {
+  /// Uploads an image file at [filePath] to Cloudinary using an unsigned upload preset.
+  /// Requires the following environment variables to be set:
+  /// - CLOUDINARY_CLOUD_NAME
+  /// - CLOUDINARY_UPLOAD_PRESET
+  /// Returns the `secure_url` on success.
+  static Future<String?> uploadImage(String filePath) async {
+    final cloudName = dotenv.env['CLOUDINARY_CLOUD_NAME'] ?? '';
+    final uploadPreset = dotenv.env['CLOUDINARY_UPLOAD_PRESET'] ?? '';
+
+    if (cloudName.isEmpty || uploadPreset.isEmpty) {
+      throw Exception(
+        'Cloudinary is not configured. Set CLOUDINARY_CLOUD_NAME and CLOUDINARY_UPLOAD_PRESET in .env',
+      );
+    }
+
+    final uri = Uri.parse(
+      'https://api.cloudinary.com/v1_1/$cloudName/image/upload',
+    );
+    final request = http.MultipartRequest('POST', uri);
+    request.fields['upload_preset'] = uploadPreset;
+    request.files.add(await http.MultipartFile.fromPath('file', filePath));
+
+    final streamed = await request.send();
+    final response = await http.Response.fromStream(streamed);
+
+    if (response.statusCode >= 200 && response.statusCode < 300) {
+      final jsonResp = jsonDecode(response.body) as Map<String, dynamic>;
+      return jsonResp['secure_url'] as String?;
+    } else {
+      throw Exception(
+        'Cloudinary upload failed: ${response.statusCode} ${response.body}',
+      );
+    }
+  }
+}

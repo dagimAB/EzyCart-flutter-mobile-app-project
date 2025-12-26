@@ -34,8 +34,20 @@ class FavouriteScreen extends StatelessWidget {
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(ESizes.defaultSpace),
-          child: Obx(
-            () => FutureBuilder(
+          child: Obx(() {
+            // Rebuild UI when favorites map changes
+            if (controller.favorites.isEmpty) {
+              return EAnimationLoaderWidget(
+                text: 'Whoops! Wishlist is Empty...',
+                animation: EImages.pencilAnimation,
+                showAction: true,
+                actionText: 'Let\'s add some',
+                onActionPressed: () =>
+                    Get.find<NavigationController>().selectedIndex.value = 0,
+              );
+            }
+
+            return FutureBuilder(
               future: controller.favoriteProducts(),
               builder: (context, snapshot) {
                 final emptyWidget = EAnimationLoaderWidget(
@@ -74,8 +86,8 @@ class FavouriteScreen extends StatelessWidget {
                       EProductCardVertical(product: products[index]),
                 );
               },
-            ),
-          ),
+            );
+          }),
         ),
       ),
     );

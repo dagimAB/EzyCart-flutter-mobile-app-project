@@ -1,14 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:ezycart/data/repositories/authentication/authentication_repository.dart';
 import 'package:ezycart/data/repositories/user/user_repository.dart';
 import 'package:ezycart/features/personalization/models/user_model.dart';
 import 'package:ezycart/utils/popups/loaders.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
-import 'dart:io';
+import 'package:ezycart/services/cloudinary_service.dart';
+import 'package:ezycart/utils/errors/error_handler.dart';
 
 class UserController extends GetxController {
   static UserController get instance => Get.find();
@@ -106,12 +105,13 @@ class UserController extends GetxController {
         );
 
         final imageBytes = await image.readAsBytes();
-        await ref.putData(
+        final uploadTask = ref.putData(
           imageBytes,
           SettableMetadata(contentType: 'image/jpeg'),
         );
 
-        final imageUrl = await ref.getDownloadURL();
+        final snapshot = await uploadTask;
+        final imageUrl = await snapshot.ref.getDownloadURL();
 
         // Update User Image Record
         Map<String, dynamic> json = {'ProfilePicture': imageUrl};
@@ -127,9 +127,53 @@ class UserController extends GetxController {
         );
       }
     } catch (e) {
-      ELoaders.errorSnackBar(
+      ErrorHandler.showError(
+        error: e,
         title: 'Oh Snap!',
-        message: 'Something went wrong: $e',
+        fallbackMessage:
+            'Failed to upload profile picture. Check your network and try again.',
+      );
+    } finally {
+      imageUploading.value = false;
+    }
+  }
+
+  /// Upload Profile Picture to Cloudinary (unsigned)
+  Future<void> uploadUserProfilePictureToCloudinary() async {
+    try {
+      final image = await ImagePicker().pickImage(
+        source: ImageSource.gallery,
+        imageQuality: 70,
+        maxHeight: 1024,
+        maxWidth: 1024,
+      );
+      if (image == null) return;
+      imageUploading.value = true;
+
+      final imageUrl = await CloudinaryService.uploadImage(image.path);
+
+      if (imageUrl == null || imageUrl.isEmpty) {
+        throw Exception('Cloudinary upload failed.');
+      }
+
+      // Update User Image Record
+      Map<String, dynamic> json = {'ProfilePicture': imageUrl};
+      await userRepository.updateSingleField(json);
+
+      // Update User Model
+      user.value.profilePicture = imageUrl;
+      user.refresh();
+
+      ELoaders.successSnackBar(
+        title: 'Congratulations',
+        message: 'Your Profile Image has been updated!',
+      );
+    } catch (e) {
+      ErrorHandler.showError(
+        error: e,
+        title: 'Oh Snap!',
+        fallbackMessage:
+            'Cloud upload failed. Check your network and try again.',
       );
     } finally {
       imageUploading.value = false;

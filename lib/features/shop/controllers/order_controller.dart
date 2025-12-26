@@ -11,8 +11,8 @@ import 'package:ezycart/utils/constants/enums.dart';
 import 'package:flutter/foundation.dart';
 import 'package:ezycart/utils/constants/image_strings.dart';
 import 'package:ezycart/utils/popups/full_screen_loader.dart';
-import 'package:ezycart/utils/popups/loaders.dart';
 import 'package:get/get.dart';
+import 'package:ezycart/utils/errors/error_handler.dart';
 
 class OrderController extends GetxController {
   static OrderController get instance => Get.find();
@@ -29,7 +29,11 @@ class OrderController extends GetxController {
       final userOrders = await orderRepository.fetchUserOrders();
       return userOrders;
     } catch (e) {
-      ELoaders.warningSnackBar(title: 'Oh Snap!', message: e.toString());
+      ErrorHandler.showWarning(
+        error: e,
+        title: 'Oh Snap!',
+        fallbackMessage: 'Could not fetch orders. Check your connection.',
+      );
       return [];
     }
   }
@@ -108,7 +112,12 @@ class OrderController extends GetxController {
         ),
       );
     } catch (e) {
-      ELoaders.errorSnackBar(title: 'Oh Snap', message: e.toString());
+      ErrorHandler.showError(
+        error: e,
+        title: 'Checkout Failed',
+        fallbackMessage:
+            'Payment or order processing failed. Check your network and payment details and try again.',
+      );
     } finally {
       // Remove Loader
       EFullScreenLoader.stopLoading();
