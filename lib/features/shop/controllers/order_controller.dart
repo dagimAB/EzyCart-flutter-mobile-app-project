@@ -71,8 +71,11 @@ class OrderController extends GetxController {
         );
 
         if (checkoutUrl != null) {
+          debugPrint('Launching Chapa Payment: $checkoutUrl (Ref: $txRef)');
           await ChapaService.launchPaymentUrl(checkoutUrl);
-          // In a real app, you would verify the payment here or via webhook
+
+          // In a production app, verify payment before saving:
+          // bool paid = await ChapaService.verifyTransaction(txRef);
           // For now, we proceed to save order
         } else if (kIsWeb) {
           // Web Form Post handled redirection

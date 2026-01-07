@@ -167,6 +167,25 @@ class ChapaService {
     }
   }
 
+  /// Verify a transaction status by reference
+  static Future<bool> verifyTransaction(String txRef) async {
+    try {
+      final response = await http.get(
+        Uri.parse('$baseUrl/transaction/verify/$txRef'),
+        headers: {'Authorization': 'Bearer $secretKey'},
+      );
+      if (response.statusCode == 200) {
+        final json = jsonDecode(response.body);
+        return json['status'] == 'success';
+      }
+      debugPrint('Chapa verify failed: ${response.body}');
+      return false;
+    } catch (e) {
+      debugPrint('Chapa verify error: $e');
+      return false;
+    }
+  }
+
   /// Helper to generate a unique transaction reference
   static String generateTxRef() {
     return 'TX-${DateTime.now().millisecondsSinceEpoch}';
