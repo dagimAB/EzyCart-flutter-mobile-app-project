@@ -1,6 +1,6 @@
 import 'dart:convert';
-// ignore: avoid_web_libraries_in_flutter
-// import 'dart:html' as html;
+import 'package:ezycart/data/services/chapa_web_stub.dart'
+    if (dart.library.html) 'package:ezycart/data/services/chapa_web_impl.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
@@ -31,26 +31,7 @@ class ChapaService {
     String? title,
     String? description,
   }) async {
-    // On Web, use HTML Form POST to bypass CORS if no proxy is configured
-    if (kIsWeb && proxyInitializeUrl.isEmpty) {
-      // If public key is missing on web, we can't proceed
-      if (publicKey.isEmpty) {
-        throw Exception(
-          'Chapa public key (CHAPA_PUBLIC_KEY) is missing in .env for web payments.',
-        );
-      }
-      // _webFormPost(
-      //   amount: amount,
-      //   currency: currency,
-      //   email: email,
-      //   firstName: firstName,
-      //   lastName: lastName,
-      //   txRef: txRef,
-      //   title: title,
-      //   description: description,
-      // );
-      return null; // Form submission handles redirection
-    }
+    debugPrint('InitializeTransaction called. kIsWeb: $kIsWeb');
 
     // On mobile/desktop, ensure secret key is available
     if (!kIsWeb && secretKey.isEmpty && proxyInitializeUrl.isEmpty) {
@@ -63,10 +44,27 @@ class ChapaService {
     Map<String, String> headers;
 
     // On Web with Proxy
-    if (kIsWeb) {
+    if (kIsWeb && proxyInitializeUrl.isNotEmpty) {
       // Use configured backend proxy
       url = Uri.parse(proxyInitializeUrl);
       headers = {'Content-Type': 'application/json'};
+    } else if (kIsWeb) {
+      // Web: Use HTML Form Post to bypass CORS
+      if (publicKey.isEmpty) {
+        throw Exception('Chapa PUBLIC KEY is missing for Web payments.');
+      }
+      chapaWebPost(
+        publicKey: publicKey,
+        amount: amount,
+        currency: currency,
+        email: email,
+        firstName: firstName,
+        lastName: lastName,
+        txRef: txRef,
+        title: title,
+        description: description,
+      );
+      return null;
     } else {
       // Mobile/Desktop: Direct call
       url = Uri.parse('$baseUrl/transaction/initialize');

@@ -1,5 +1,6 @@
 import 'package:ezycart/features/authentication/screens/login/login.dart';
 import 'package:ezycart/features/authentication/screens/onBoarding/onboarding.dart';
+import 'package:ezycart/features/authentication/screens/signup/verify_email.dart';
 import 'package:ezycart/navigation_menu.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -41,8 +42,14 @@ class AuthenticationRepository extends GetxController {
       final user = _auth.currentUser;
 
       if (user != null) {
-        // If user is logged in, go to Home
-        Get.offAll(() => const NavigationMenu());
+        // Check if Email is Verified
+        if (user.emailVerified) {
+          // If user is logged in and verified, go to Home
+          Get.offAll(() => const NavigationMenu());
+        } else {
+          // If user is logged in but NOT verified, go to VerifyEmailScreen
+          Get.offAll(() => VerifyEmailScreen(email: user.email));
+        }
       } else {
         // Local Storage
         deviceStorage.writeIfNull('IsFirstTime', true);
@@ -87,9 +94,18 @@ class AuthenticationRepository extends GetxController {
         'loginWithEmailAndPassword FirebaseAuthException: ${e.code} - ${e.message}',
       );
       debugPrintStack(stackTrace: st);
+
+      if (e.code == 'user-not-found') {
+        throw 'User not found. Please Sign Up.';
+      } else if (e.code == 'wrong-password') {
+        throw 'Incorrect password.';
+      } else if (e.code == 'invalid-credential') {
+        // Newer Firebase protections often use this for both cases
+        throw 'Invalid Email or Password.';
+      }
+
       // Preserve Firebase error messages but provide a default
-      throw e.message ??
-          'Authentication failed. Please check your credentials.';
+      throw e.message ?? 'Authentication failed.';
     } catch (e, st) {
       debugPrint('loginWithEmailAndPassword error: $e');
       debugPrintStack(stackTrace: st);
@@ -119,7 +135,11 @@ class AuthenticationRepository extends GetxController {
   /// [EmailVerification] - MAIL VERIFICATION
   Future<void> sendEmailVerification() async {
     try {
-      await _auth.currentUser?.sendEmailVerification();
+      final user = _auth.currentUser;
+      if (user == null) {
+        throw 'User not found. Try logging in again.';
+      }
+      await user.sendEmailVerification();
     } on FirebaseAuthException catch (e) {
       throw e.message!;
     } catch (e) {

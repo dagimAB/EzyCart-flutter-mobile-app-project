@@ -45,4 +45,33 @@ class UserRepository extends GetxController {
       throw 'Something went wrong. Please try again';
     }
   }
+
+  /// [Admin] Function to fetch all users.
+  Future<List<UserModel>> fetchAllUsers() async {
+    try {
+      final snapshot = await _db.collection("Users").get();
+      return snapshot.docs.map((e) => UserModel.fromSnapshot(e)).toList();
+    } catch (e) {
+      throw 'Something went wrong. Please try again';
+    }
+  }
+
+  /// [Admin] Function to update any user record.
+  Future<void> updateUserRecord(UserModel user) async {
+    try {
+      await _db.collection("Users").doc(user.id).update(user.toJson());
+    } catch (e) {
+      throw 'Something went wrong. Please try again';
+    }
+  }
+
+  /// [Admin] Function to delete user record from Firestore.
+  /// Note: This does not delete the user from Firebase Auth (requires Admin SDK).
+  Future<void> deleteUserRecord(String userId) async {
+    try {
+      await _db.collection("Users").doc(userId).delete();
+    } catch (e) {
+      throw 'Something went wrong. Please try again';
+    }
+  }
 }

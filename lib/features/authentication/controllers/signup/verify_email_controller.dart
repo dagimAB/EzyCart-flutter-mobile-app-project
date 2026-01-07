@@ -5,8 +5,8 @@ import 'package:ezycart/utils/constants/image_strings.dart';
 import 'package:ezycart/utils/constants/text_strings.dart';
 import 'package:ezycart/utils/popups/loaders.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart'; // Needed for debugPrint
 import 'package:get/get.dart';
-import 'package:ezycart/utils/errors/error_handler.dart';
 
 class VerifyEmailController extends GetxController {
   static VerifyEmailController get instance => Get.find();
@@ -14,25 +14,40 @@ class VerifyEmailController extends GetxController {
   /// Send Email Whenever Verify Screen appears & Set Timer for auto redirect.
   @override
   void onInit() {
-    sendEmailVerification();
-    setTimerForAutoRedirect();
     super.onInit();
+    // Send email after a slight delay to ensure UI is ready
+    Future.delayed(const Duration(milliseconds: 500), () {
+      sendEmailVerification();
+    });
+    setTimerForAutoRedirect();
   }
 
   /// Send Email Verification link
   sendEmailVerification() async {
     try {
+      debugPrint('Attempting to send verification email...');
+      final user = FirebaseAuth.instance.currentUser;
+      if (user == null) {
+        ELoaders.errorSnackBar(
+          title: 'Error',
+          message: 'User not found. Please log in again.',
+        );
+        return;
+      }
+
+      // Reload to ensure fresh state
+      await user.reload();
+
       await AuthenticationRepository.instance.sendEmailVerification();
+
+      debugPrint('Verification email sent to ${user.email}');
       ELoaders.successSnackBar(
         title: 'Email Sent',
-        message: 'Please Check your inbox and verify your email.',
+        message: 'Link sent to ${user.email}. Check Inbox/Spam.',
       );
     } catch (e) {
-      ErrorHandler.showError(
-        error: e,
-        title: 'Oh Snap!',
-        fallbackMessage: 'Could not verify email.',
-      );
+      debugPrint('Error sending verification email: $e');
+      ELoaders.errorSnackBar(title: 'Oh Snap!', message: e.toString());
     }
   }
 

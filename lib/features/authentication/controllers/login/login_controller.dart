@@ -4,6 +4,7 @@ import 'package:ezycart/features/personalization/models/user_model.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:ezycart/utils/errors/error_handler.dart';
+import 'package:ezycart/utils/popups/loaders.dart';
 
 class LoginController extends GetxController {
   static LoginController get instance => Get.find();
@@ -19,30 +20,35 @@ class LoginController extends GetxController {
 
   /// -- Login
   Future<void> emailAndPasswordSignIn() async {
-    isLoading.value = true;
     try {
-      // Form Validation
+      // 1. Check Internet (Basic check using lookup, or rely on Firebase timeout)
+      // For now, we rely on Firebase throwing error if offline.
+
+      // 2. Form Validation
       if (!loginFormKey.currentState!.validate()) {
+        debugPrint('Form validation failed');
         return;
       }
 
-      // Login user using Email & Password Authentication
+      // 3. Start Loading
+      isLoading.value = true;
+      debugPrint('Attempting login for: ${email.text.trim()}');
+
+      // 4. Login user
       await AuthenticationRepository.instance.loginWithEmailAndPassword(
         email.text.trim(),
         password.text.trim(),
       );
 
-      // Redirect
+      // 5. Redirect (AuthenticationRepository handles this usually, but we call it explicitly)
+      debugPrint('Login success, redirecting...');
       AuthenticationRepository.instance.screenRedirect();
-    } catch (e, st) {
+    } catch (e) {
+      // The Repository already throws user-friendly Strings
+      // So we just display them directly.
       debugPrint('emailAndPasswordSignIn error: $e');
-      debugPrintStack(stackTrace: st);
-      ErrorHandler.showError(
-        error: e,
-        title: 'Oh Snap!',
-        fallbackMessage:
-            'Login failed. Please check your credentials and connection.',
-      );
+
+      ELoaders.errorSnackBar(title: 'Login Failed', message: e.toString());
     } finally {
       isLoading.value = false;
     }

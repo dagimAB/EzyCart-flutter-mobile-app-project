@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:ezycart/features/shop/models/product_model.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
@@ -80,9 +81,15 @@ class ProductRepository extends GetxController {
             .where(FieldPath.documentId, whereIn: chunk)
             .get();
 
-        products.addAll(
-          snapshot.docs.map((e) => ProductModel.fromSnapshot(e)).toList(),
-        );
+        // Safe mapping to handle potential data corruption in individual documents
+        for (final doc in snapshot.docs) {
+          try {
+            products.add(ProductModel.fromSnapshot(doc));
+          } catch (e) {
+            // Log error for the specific document but continue loading others
+            debugPrint('Error mapping product ${doc.id}: $e');
+          }
+        }
       }
       return products;
     } on FirebaseException catch (e) {

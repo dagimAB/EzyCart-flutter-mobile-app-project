@@ -150,7 +150,10 @@ class UserController extends GetxController {
       if (image == null) return;
       imageUploading.value = true;
 
-      final imageUrl = await CloudinaryService.uploadImage(image.path);
+      final imageUrl = await CloudinaryService.uploadImage(
+        image.path,
+        file: image,
+      );
 
       if (imageUrl == null || imageUrl.isEmpty) {
         throw Exception('Cloudinary upload failed.');
@@ -169,12 +172,7 @@ class UserController extends GetxController {
         message: 'Your Profile Image has been updated!',
       );
     } catch (e) {
-      ErrorHandler.showError(
-        error: e,
-        title: 'Oh Snap!',
-        fallbackMessage:
-            'Cloud upload failed. Check your network and try again.',
-      );
+      ErrorHandler.showError(error: e, title: 'Oh Snap!');
     } finally {
       imageUploading.value = false;
     }

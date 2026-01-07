@@ -21,14 +21,29 @@ class EAnimationLoaderWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Determine if we should use Lottie or a standard Image widget
+    final isLottie = animation.toLowerCase().endsWith('.json');
+
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Lottie.asset(
-            animation,
-            width: MediaQuery.of(context).size.width * 0.8,
-          ),
+          isLottie
+              ? Lottie.asset(
+                  animation,
+                  width: MediaQuery.of(context).size.width * 0.8,
+                )
+              : Image.asset(
+                  animation,
+                  width: MediaQuery.of(context).size.width * 0.8,
+                  errorBuilder: (context, error, stackTrace) {
+                    return const Icon(
+                      Icons.error,
+                      size: 80,
+                      color: Colors.grey,
+                    );
+                  },
+                ),
           const SizedBox(height: ESizes.defaultSpace),
           Text(
             text,

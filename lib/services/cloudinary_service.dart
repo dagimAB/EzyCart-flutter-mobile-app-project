@@ -1,16 +1,14 @@
 import 'dart:convert';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
+import 'package:image_picker/image_picker.dart';
 
 class CloudinaryService {
-  /// Uploads an image file at [filePath] to Cloudinary using an unsigned upload preset.
-  /// Requires the following environment variables to be set:
-  /// - CLOUDINARY_CLOUD_NAME
-  /// - CLOUDINARY_UPLOAD_PRESET
-  /// Returns the `secure_url` on success.
-  static Future<String?> uploadImage(String filePath) async {
-    final cloudName = dotenv.env['CLOUDINARY_CLOUD_NAME'] ?? '';
-    final uploadPreset = dotenv.env['CLOUDINARY_UPLOAD_PRESET'] ?? '';
+  /// Uploads an image file to Cloudinary using an unsigned upload preset.
+  /// Supports both Mobile (File Path) and Web (Bytes).
+  static Future<String?> uploadImage(String filePath, {XFile? file}) async {
+    final cloudName = (dotenv.env['CLOUDINARY_CLOUD_NAME'] ?? '').trim();
+    final uploadPreset = (dotenv.env['CLOUDINARY_UPLOAD_PRESET'] ?? '').trim();
 
     if (cloudName.isEmpty || uploadPreset.isEmpty) {
       throw Exception(
@@ -23,7 +21,17 @@ class CloudinaryService {
     );
     final request = http.MultipartRequest('POST', uri);
     request.fields['upload_preset'] = uploadPreset;
-    request.files.add(await http.MultipartFile.fromPath('file', filePath));
+
+    if (file != null) {
+      // Use bytes for better compatibility (especially Web) - checking if XFile is provided
+      final bytes = await file.readAsBytes();
+      request.files.add(
+        http.MultipartFile.fromBytes('file', bytes, filename: file.name),
+      );
+    } else {
+      // Fallback to path if only path provided (Mobile legacy)
+      request.files.add(await http.MultipartFile.fromPath('file', filePath));
+    }
 
     final streamed = await request.send();
     final response = await http.Response.fromStream(streamed);
@@ -33,7 +41,7 @@ class CloudinaryService {
       return jsonResp['secure_url'] as String?;
     } else {
       throw Exception(
-        'Cloudinary upload failed: ${response.statusCode} ${response.body}',
+        'Cloudinary Error: ${response.statusCode} - ${response.body}',
       );
     }
   }

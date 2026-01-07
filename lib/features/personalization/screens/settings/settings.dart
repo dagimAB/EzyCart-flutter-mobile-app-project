@@ -4,6 +4,8 @@ import 'package:ezycart/common/widgets/list_tiles/settings_menu_tile.dart';
 import 'package:ezycart/common/widgets/list_tiles/user_profile_tile.dart';
 import 'package:ezycart/common/widgets/texts/section_heading.dart';
 import 'package:ezycart/data/repositories/authentication/authentication_repository.dart';
+import 'package:ezycart/features/admin/screens/orders/admin_orders.dart';
+import 'package:ezycart/features/admin/screens/users/admin_all_users.dart';
 import 'package:ezycart/features/personalization/controllers/user_controller.dart';
 import 'package:ezycart/features/personalization/screens/address/address.dart';
 import 'package:ezycart/features/personalization/screens/profile/profile.dart';
@@ -97,6 +99,21 @@ class SettingsScreen extends StatelessWidget {
                                 showActionButton: false,
                               ),
                               const SizedBox(height: ESizes.spaceBtwItems),
+                              ESettingsMenuTile(
+                                icon: Iconsax.bag_tick,
+                                title: 'Manage Orders',
+                                subTitle:
+                                    'View and change status of all orders',
+                                onTap: () =>
+                                    Get.to(() => const AdminOrdersScreen()),
+                              ),
+                              ESettingsMenuTile(
+                                icon: Iconsax.people,
+                                title: 'Manage Users',
+                                subTitle: 'View, edit, or delete users',
+                                onTap: () =>
+                                    Get.to(() => const AdminAllUsersScreen()),
+                              ),
                               ESettingsMenuTile(
                                 icon: Iconsax.add_circle,
                                 title: 'Add New Product',

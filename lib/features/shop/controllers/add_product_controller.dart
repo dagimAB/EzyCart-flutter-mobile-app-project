@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:ezycart/features/shop/models/brand_model.dart';
 import 'package:ezycart/features/shop/models/category_model.dart';
 import 'package:ezycart/features/shop/models/product_model.dart';
+import 'package:ezycart/services/cloudinary_service.dart';
 import 'package:ezycart/utils/constants/image_strings.dart';
 import 'package:ezycart/utils/popups/full_screen_loader.dart';
 import 'package:ezycart/utils/popups/loaders.dart';
@@ -78,16 +79,14 @@ class AddProductController extends GetxController {
       // Upload Image if selected
       String imageUrl = '';
       if (selectedImage.value != null) {
-        final ref = FirebaseStorage.instance.ref().child(
-          'Products/Images/${DateTime.now().millisecondsSinceEpoch}.jpg',
+        final uploaded = await CloudinaryService.uploadImage(
+          selectedImage.value!.path,
+          file: selectedImage.value,
         );
+        imageUrl = uploaded ?? '';
+      }
 
-        // Use putData for all platforms to avoid native file path issues
-        final imageBytes = await selectedImage.value!.readAsBytes();
-        await ref.putData(imageBytes);
-
-        imageUrl = await ref.getDownloadURL();
-      } else {
+      if (imageUrl.isEmpty) {
         imageUrl = EImages.productImage1; // Default placeholder
       }
 
@@ -138,11 +137,7 @@ class AddProductController extends GetxController {
       Get.back();
     } catch (e) {
       EFullScreenLoader.stopLoading();
-      ErrorHandler.showError(
-        error: e,
-        title: 'Oh Snap!',
-        fallbackMessage: 'Could not save product. Please try again.',
-      );
+      ErrorHandler.showError(error: e, title: 'Oh Snap!');
     }
   }
 
