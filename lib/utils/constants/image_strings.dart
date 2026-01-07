@@ -21,19 +21,19 @@ class EImages {
       "assets/images/on_boarding_images/sammy-line-deliver.gif";
 
   // -- Animations
-
+  // NOTE: Pointing to available assets to prevent crashes
   static const String productsIllustration =
-      "assets/images/animations/sammy-line-workout.gif";
+      "assets/images/animations/verify_email.gif";
   static const String productsSaleIllustration =
-      "assets/images/animations/sammy-line-sale.png";
+      "assets/images/animations/email_success.gif";
   static const String staticSuccessIllustration =
       "assets/images/animations/email_success.gif";
   static const String deliveredInPlaneIllustration =
-      "assets/images/animations/sammy-line-come-back-later.png";
+      "assets/images/animations/email_success.gif";
   static const String deliveredEmailIllustration =
       "assets/images/animations/verify_email.gif";
   static const String verifyIllustration =
-      "assets/images/animations/sammy-line-travel-backpack-with-passport-and-air-ticket.gif";
+      "assets/images/animations/verify_email.gif";
   static const String pencilAnimation =
       "assets/images/animations/verify_email.gif";
   static const String orderCompletedAnimation =

@@ -40,7 +40,8 @@ class FavouriteScreen extends StatelessWidget {
             if (controller.favorites.isEmpty) {
               return EAnimationLoaderWidget(
                 text: 'Whoops! Wishlist is Empty...',
-                animation: EImages.pencilAnimation,
+                // Use a proper "Empty/Search" animation instead of the default loader
+                animation: EImages.onBoardingImage1,
                 showAction: true,
                 actionText: 'Let\'s add some',
                 onActionPressed: () =>
@@ -53,7 +54,8 @@ class FavouriteScreen extends StatelessWidget {
               builder: (context, snapshot) {
                 final emptyWidget = EAnimationLoaderWidget(
                   text: 'Whoops! Wishlist is Empty...',
-                  animation: EImages.pencilAnimation,
+                  // Use a proper "Empty/Search" animation instead of the default loader
+                  animation: EImages.onBoardingImage1,
                   showAction: true,
                   actionText: 'Let\'s add some',
                   onActionPressed: () =>

@@ -20,6 +20,8 @@ class EPromoSlider extends StatelessWidget {
         CarouselSlider(
           options: CarouselOptions(
             viewportFraction: 1,
+            autoPlay: true,
+            autoPlayInterval: const Duration(seconds: 4),
             onPageChanged: (index, _) => controller.updatePageIndicator(index),
           ),
           items: banners.map((url) => ERoundedImage(imageUrl: url)).toList(),

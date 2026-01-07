@@ -39,10 +39,22 @@ EzyCart is a modern, feature-rich e-commerce application built with Flutter. It 
     flutter pub get
     ```
 
-3.  **Run the App:**
+3.  **Configuration:**
+
+    - Copy `.env.example` to `.env` and fill in real, sensitive values (do NOT commit `.env`):
+      - `GOOGLE_CLIENT_ID` — Required for Google Sign-In on Web.
+      - `CHAPA_SECRET_KEY` and `CHAPA_PUBLIC_KEY` — Required for Chapa payments.
+      - Any other keys used by your services (e.g., Cloudinary, etc.).
+    - Ensure platform-specific files exist for Firebase:
+      - `android/app/google-services.json` (Android)
+      - `ios/Runner/GoogleService-Info.plist` (iOS)
+
+4.  **Run the App:**
     ```bash
     flutter run
     ```
+
+> Notes: If authentication or payments fail, check that `.env` has the required keys and that Firebase platform files are present. Read the `FIREBASE_SETUP.md` for help configuring Firebase.
 
 ## Folder Structure
 

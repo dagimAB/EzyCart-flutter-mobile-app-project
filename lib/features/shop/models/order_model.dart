@@ -56,9 +56,16 @@ class OrderModel {
   factory OrderModel.fromSnapshot(DocumentSnapshot snapshot) {
     final data = snapshot.data() as Map<String, dynamic>;
 
+    // Robustly get userId from the Firestore path logic to ensure Updates work
+    // Path: Users/{userId}/Orders/{orderId}
+    String derivedUserId = data['userId'] ?? '';
+    if (snapshot.reference.parent.parent != null) {
+      derivedUserId = snapshot.reference.parent.parent!.id;
+    }
+
     return OrderModel(
-      id: data['id'] as String,
-      userId: data['userId'] as String,
+      id: snapshot.id,
+      userId: derivedUserId,
       status: OrderStatus.values.firstWhere(
         (e) => e.toString() == data['status'],
         orElse: () => OrderStatus.pending,

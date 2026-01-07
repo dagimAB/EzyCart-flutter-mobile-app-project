@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:ezycart/data/repositories/product/product_repository.dart';
 import 'package:ezycart/features/shop/models/product_model.dart';
 import 'package:ezycart/utils/popups/loaders.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 
@@ -72,8 +73,18 @@ class FavouritesController extends GetxController {
 
   Future<List<ProductModel>> favoriteProducts() async {
     if (favorites.isEmpty) return [];
-    return await ProductRepository.instance.getFavouriteProducts(
-      favorites.keys.toList(),
-    );
+    try {
+      return await ProductRepository.instance.getFavouriteProducts(
+        favorites.keys.toList(),
+      );
+    } catch (e) {
+      // Fallback for corrupt data or platform parsing errors (e.g. JsonReader issue)
+      debugPrint('Error fetching favorite products: $e');
+      ELoaders.errorSnackBar(
+        title: 'Oh Snap!',
+        message: 'Could not load Wishlist items.',
+      );
+      return [];
+    }
   }
 }

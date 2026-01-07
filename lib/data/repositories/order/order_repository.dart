@@ -40,4 +40,34 @@ class OrderRepository extends GetxController {
       throw 'Something went wrong while saving Order Information. Try again later';
     }
   }
+
+  /// Fetch ALL orders for Admin using Collection Group Query
+  Future<List<OrderModel>> getAllOrders() async {
+    try {
+      final result = await _db.collectionGroup('Orders').get();
+      return result.docs
+          .map((documentSnapshot) => OrderModel.fromSnapshot(documentSnapshot))
+          .toList();
+    } catch (e) {
+      throw 'Something went wrong while fetching all orders. Try again later';
+    }
+  }
+
+  /// Update Order Status
+  Future<void> updateOrderStatus(
+    String orderId,
+    String userId,
+    String status,
+  ) async {
+    try {
+      await _db
+          .collection('Users')
+          .doc(userId)
+          .collection('Orders')
+          .doc(orderId)
+          .update({'status': status});
+    } catch (e) {
+      throw 'Error updating: $e';
+    }
+  }
 }

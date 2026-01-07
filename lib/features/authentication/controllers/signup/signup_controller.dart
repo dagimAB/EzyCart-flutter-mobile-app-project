@@ -21,6 +21,8 @@ class SignupController extends GetxController {
   GlobalKey<FormState> signupFormKey = GlobalKey<FormState>();
   final hidePassword = true.obs;
   final hideConfirmPassword = true.obs;
+  final privacyPolicy =
+      true.obs; // Default to true to reduce friction, or false to force check
 
   // -- Loading
   final isLoading = false.obs;
@@ -28,23 +30,36 @@ class SignupController extends GetxController {
   /// -- Signup
   Future<void> signup() async {
     try {
-      // Start Loading
-      isLoading.value = true;
-
-      // Form Validation
+      // 1. Form Validation
       if (!signupFormKey.currentState!.validate()) {
-        isLoading.value = false;
+        ELoaders.warningSnackBar(
+          title: 'Validation Error',
+          message: 'Please fill all fields correctly.',
+        );
         return;
       }
 
-      // Register user in the Firebase Authentication & Save user data in the Firebase
+      // 2. Privacy Policy Check
+      if (!privacyPolicy.value) {
+        ELoaders.warningSnackBar(
+          title: 'Accept Privacy Policy',
+          message:
+              'You must accept the privacy policy and terms of use to create an account.',
+        );
+        return;
+      }
+
+      // 3. Start Loading
+      isLoading.value = true;
+
+      // 4. Register user
       final userCredential = await AuthenticationRepository.instance
           .registerWithEmailAndPassword(
             email.text.trim(),
             password.text.trim(),
           );
 
-      // Save Authenticated User Data in the Firebase Firestore
+      // 5. Save User Data
       final newUser = UserModel(
         id: userCredential.user!.uid,
         firstName: firstName.text.trim(),
@@ -58,25 +73,19 @@ class SignupController extends GetxController {
       final userRepository = Get.put(UserRepository());
       await userRepository.saveUserRecord(newUser);
 
-      // Remove Loader
-      isLoading.value = false;
-
-      // Show Success Message
+      // 6. Success
       ELoaders.successSnackBar(
         title: 'Congratulations',
         message: 'Your account has been created! Verify email to continue.',
       );
 
-      // Move to Verify Email Screen
+      // 7. Move to Verify Email
       Get.to(() => VerifyEmailScreen(email: email.text.trim()));
     } catch (e) {
+      debugPrint('Signup error: $e');
+      ELoaders.errorSnackBar(title: 'Signup Failed', message: e.toString());
+    } finally {
       isLoading.value = false;
-      ErrorHandler.showError(
-        error: e,
-        title: 'Oh Snap!',
-        fallbackMessage:
-            'Signup failed. Please check your network and try again.',
-      );
     }
   }
 
