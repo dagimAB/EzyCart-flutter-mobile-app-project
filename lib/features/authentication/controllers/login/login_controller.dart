@@ -19,13 +19,10 @@ class LoginController extends GetxController {
 
   /// -- Login
   Future<void> emailAndPasswordSignIn() async {
+    isLoading.value = true;
     try {
-      // Start Loading
-      isLoading.value = true;
-
       // Form Validation
       if (!loginFormKey.currentState!.validate()) {
-        isLoading.value = false;
         return;
       }
 
@@ -35,28 +32,26 @@ class LoginController extends GetxController {
         password.text.trim(),
       );
 
-      // Remove Loader
-      isLoading.value = false;
-
       // Redirect
       AuthenticationRepository.instance.screenRedirect();
-    } catch (e) {
-      isLoading.value = false;
+    } catch (e, st) {
+      debugPrint('emailAndPasswordSignIn error: $e');
+      debugPrintStack(stackTrace: st);
       ErrorHandler.showError(
         error: e,
         title: 'Oh Snap!',
         fallbackMessage:
             'Login failed. Please check your credentials and connection.',
       );
+    } finally {
+      isLoading.value = false;
     }
   }
 
   /// -- Google SignIn
   Future<void> googleSignIn() async {
+    isLoading.value = true;
     try {
-      // Start Loading
-      isLoading.value = true;
-
       // Google Authentication
       final userCredentials = await AuthenticationRepository.instance
           .signInWithGoogle();
@@ -85,16 +80,16 @@ class LoginController extends GetxController {
         // Redirect
         AuthenticationRepository.instance.screenRedirect();
       }
-
-      // Remove Loader
-      isLoading.value = false;
-    } catch (e) {
-      isLoading.value = false;
+    } catch (e, st) {
+      debugPrint('googleSignIn error: $e');
+      debugPrintStack(stackTrace: st);
       ErrorHandler.showError(
         error: e,
         title: 'Oh Snap!',
         fallbackMessage: 'Google sign-in failed.',
       );
+    } finally {
+      isLoading.value = false;
     }
   }
 }

@@ -4,6 +4,7 @@ import 'package:ezycart/utils/constants/image_strings.dart';
 import 'package:ezycart/utils/constants/sizes.dart';
 import 'package:ezycart/utils/helpers/helper_functions.dart';
 import 'package:ezycart/features/authentication/screens/login/login.dart';
+import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -45,23 +46,39 @@ class _SplashScreenState extends State<SplashScreen> {
 
     return Scaffold(
       backgroundColor: dark ? EColors.dark : EColors.light,
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            ClipRRect(
-              borderRadius: BorderRadius.circular(
-                20,
-              ), // Adjust radius as needed
-              child: Image.asset(
-                dark ? EImages.lightAppLogo : EImages.darkAppLogo,
-                width: Get.width * 0.5,
+      body: Stack(
+        children: [
+          Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(
+                    20,
+                  ), // Adjust radius as needed
+                  child: Image.asset(
+                    dark ? EImages.lightAppLogo : EImages.darkAppLogo,
+                    width: Get.width * 0.5,
+                  ),
+                ),
+                const SizedBox(height: ESizes.spaceBtwSections),
+                const CircularProgressIndicator(color: EColors.primary),
+              ],
+            ),
+          ),
+          if (kDebugMode)
+            Positioned(
+              right: 8,
+              top: 8,
+              child: SafeArea(
+                child: ElevatedButton.icon(
+                  onPressed: () => Get.toNamed('/diagnostics'),
+                  icon: const Icon(Icons.bug_report),
+                  label: const Text('Diagnostics'),
+                ),
               ),
             ),
-            const SizedBox(height: ESizes.spaceBtwSections),
-            const CircularProgressIndicator(color: EColors.primary),
-          ],
-        ),
+        ],
       ),
     );
   }

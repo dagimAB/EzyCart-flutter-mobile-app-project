@@ -81,11 +81,18 @@ class AuthenticationRepository extends GetxController {
         email: email,
         password: password,
       );
-    } on FirebaseAuthException catch (e) {
+    } on FirebaseAuthException catch (e, st) {
+      // Log for debugging
+      debugPrint(
+        'loginWithEmailAndPassword FirebaseAuthException: ${e.code} - ${e.message}',
+      );
+      debugPrintStack(stackTrace: st);
       // Preserve Firebase error messages but provide a default
       throw e.message ??
           'Authentication failed. Please check your credentials.';
-    } catch (e) {
+    } catch (e, st) {
+      debugPrint('loginWithEmailAndPassword error: $e');
+      debugPrintStack(stackTrace: st);
       // Pass string errors through, otherwise provide fallback
       if (e is String) rethrow;
       throw 'Something went wrong. Please try again';
@@ -178,10 +185,15 @@ class AuthenticationRepository extends GetxController {
 
       // Once signed in, return the UserCredential
       return await _auth.signInWithCredential(credential);
-    } on FirebaseAuthException catch (e) {
+    } on FirebaseAuthException catch (e, st) {
+      debugPrint(
+        'signInWithGoogle FirebaseAuthException: ${e.code} - ${e.message}',
+      );
+      debugPrintStack(stackTrace: st);
       throw e.message ?? 'Google authentication failed.';
-    } catch (e) {
+    } catch (e, st) {
       debugPrint('Google Sign-In Error: $e');
+      debugPrintStack(stackTrace: st);
       if (e is String) rethrow;
       throw 'Something went wrong with Google sign-in.';
     }
