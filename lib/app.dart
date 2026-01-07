@@ -9,7 +9,9 @@ import 'package:get/get.dart';
 // // --Used to setup themes, Initialize bindings, animation and such things
 
 class App extends StatelessWidget {
-  const App({super.key});
+  final Bindings? initialBinding;
+
+  const App({super.key, this.initialBinding});
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +20,7 @@ class App extends StatelessWidget {
       themeMode: ThemeMode.system,
       theme: EAppTheme.lightTheme,
       darkTheme: EAppTheme.darkTheme,
-      initialBinding: GeneralBindings(),
+      initialBinding: initialBinding ?? GeneralBindings(),
       initialRoute: '/',
       getPages: [
         GetPage(name: '/', page: () => const SplashScreen()),

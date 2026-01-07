@@ -33,6 +33,12 @@ class ChapaService {
   }) async {
     // On Web, use HTML Form POST to bypass CORS if no proxy is configured
     if (kIsWeb && proxyInitializeUrl.isEmpty) {
+      // If public key is missing on web, we can't proceed
+      if (publicKey.isEmpty) {
+        throw Exception(
+          'Chapa public key (CHAPA_PUBLIC_KEY) is missing in .env for web payments.',
+        );
+      }
       // _webFormPost(
       //   amount: amount,
       //   currency: currency,
@@ -44,6 +50,13 @@ class ChapaService {
       //   description: description,
       // );
       return null; // Form submission handles redirection
+    }
+
+    // On mobile/desktop, ensure secret key is available
+    if (!kIsWeb && secretKey.isEmpty && proxyInitializeUrl.isEmpty) {
+      throw Exception(
+        'Chapa secret key (CHAPA_SECRET_KEY) is missing in .env for mobile/desktop payments.',
+      );
     }
 
     Uri url;
