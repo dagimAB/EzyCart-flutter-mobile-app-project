@@ -4,6 +4,8 @@ import 'package:ezycart/features/shop/screens/cart/cart.dart';
 import 'package:ezycart/utils/constants/colors.dart';
 import 'package:ezycart/utils/constants/text_strings.dart';
 import 'package:ezycart/features/personalization/controllers/user_controller.dart';
+import 'package:ezycart/features/ai/screens/ai_chat_screen.dart';
+import 'package:ezycart/features/shop/screens/search/search.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -40,9 +42,19 @@ class EHomeAppBar extends StatelessWidget {
         ],
       ), // Column
       actions: [
+        IconButton(
+          icon: const Icon(Icons.search, color: Colors.white),
+          onPressed: () => Get.to(() => const SearchScreen()),
+        ),
         ECartCounterIcon(
           onPressed: () => Get.to(() => const CartScreen()),
           iconColor: EColors.white,
+        ),
+        // AI Assistant entry point
+        IconButton(
+          icon: const Icon(Icons.smart_toy, color: Colors.white),
+          tooltip: 'AI Assistant',
+          onPressed: () => Get.to(() => const AiChatScreen()),
         ),
       ],
     );

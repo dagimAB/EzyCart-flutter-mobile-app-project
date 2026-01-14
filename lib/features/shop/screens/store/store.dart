@@ -4,6 +4,7 @@ import 'package:ezycart/common/widgets/products/cart/cart_menu_icon.dart';
 import 'package:ezycart/features/shop/controllers/category_controller.dart';
 import 'package:ezycart/features/shop/screens/cart/cart.dart';
 import 'package:ezycart/features/shop/screens/search/search.dart';
+import 'package:ezycart/navigation_menu.dart';
 import 'package:ezycart/features/shop/screens/store/widgets/category_tab.dart';
 import 'package:ezycart/utils/constants/colors.dart';
 import 'package:ezycart/utils/constants/sizes.dart';
@@ -26,6 +27,8 @@ class StoreScreen extends StatelessWidget {
       if (categoryController.featuredCategories.isEmpty) {
         return Scaffold(
           appBar: EAppBar(
+            leadingOnPressed: () =>
+                Get.find<NavigationController>().selectedIndex.value = 0,
             title: Text(
               'Store',
               style: Theme.of(context).textTheme.headlineMedium,
@@ -39,7 +42,8 @@ class StoreScreen extends StatelessWidget {
         length: categoryController.featuredCategories.length,
         child: Scaffold(
           appBar: EAppBar(
-            showBackArrow: false,
+            leadingOnPressed: () =>
+                Get.find<NavigationController>().selectedIndex.value = 0,
             title: Text(
               'Store',
               style: Theme.of(context).textTheme.headlineMedium,

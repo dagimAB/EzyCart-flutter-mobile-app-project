@@ -23,6 +23,9 @@ dependencies:
   carousel_slider: ^5.1.1
   font_awesome_flutter: ^10.7.0
   smooth_page_indicator: ^1.1.0
+  crypto: ^3.0.3 # Provides SHA-256 hashing for client side password protection
+  flutter_secure_storage: ^9.2.2 # Encrypts sensitive data at rest on device
+  web: ^1.1.1 # Web platform DOM access without deprecated dart:html
 
   #Icons
   iconsax: ^0.0.8

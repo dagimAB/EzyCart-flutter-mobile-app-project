@@ -1,5 +1,4 @@
-// ignore: avoid_web_libraries_in_flutter
-import 'dart:html' as html;
+import 'package:web/web.dart' as web;
 
 void chapaWebPost({
   required String publicKey,
@@ -12,13 +11,13 @@ void chapaWebPost({
   String? title,
   String? description,
 }) {
-  final form = html.FormElement()
+  final form = web.HTMLFormElement()
     ..method = 'POST'
     ..action = 'https://api.chapa.co/v1/hosted/pay'
     ..style.display = 'none';
 
   void addInput(String name, String value) {
-    final input = html.InputElement()
+    final input = web.HTMLInputElement()
       ..type = 'hidden'
       ..name = name
       ..value = value;
@@ -39,7 +38,7 @@ void chapaWebPost({
   if (title != null) addInput('title', title);
   if (description != null) addInput('description', description);
 
-  html.document.body!.append(form);
+  web.document.body!.append(form);
   form.submit();
   form.remove();
 }

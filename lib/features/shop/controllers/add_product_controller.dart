@@ -6,7 +6,6 @@ import 'package:ezycart/services/cloudinary_service.dart';
 import 'package:ezycart/utils/constants/image_strings.dart';
 import 'package:ezycart/utils/popups/full_screen_loader.dart';
 import 'package:ezycart/utils/popups/loaders.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';

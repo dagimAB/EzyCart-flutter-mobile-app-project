@@ -2,6 +2,7 @@ import 'package:ezycart/common/widgets/appbar/appbar.dart';
 import 'package:ezycart/features/shop/controllers/cart_controller.dart';
 import 'package:ezycart/features/shop/screens/cart/widgets/cart_items.dart';
 import 'package:ezycart/features/shop/screens/checkout/checkout.dart';
+import 'package:ezycart/navigation_menu.dart';
 import 'package:ezycart/utils/constants/sizes.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -15,7 +16,8 @@ class CartScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: EAppBar(
-        showBackArrow: false,
+        leadingOnPressed: () =>
+            Get.find<NavigationController>().selectedIndex.value = 0,
         title: Text('Cart', style: Theme.of(context).textTheme.headlineSmall),
       ),
       body: Obx(() {

@@ -3,12 +3,10 @@ import 'package:ezycart/common/widgets/images/e_circular_image.dart';
 import 'package:ezycart/common/widgets/texts/section_heading.dart';
 import 'package:ezycart/features/admin/controllers/user/admin_user_controller.dart';
 import 'package:ezycart/features/personalization/models/user_model.dart';
-import 'package:ezycart/utils/constants/colors.dart';
 import 'package:ezycart/utils/constants/image_strings.dart';
 import 'package:ezycart/utils/constants/sizes.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:iconsax/iconsax.dart';
 
 class AdminUserDetailScreen extends StatelessWidget {
   const AdminUserDetailScreen({super.key, required this.user});
@@ -72,7 +70,7 @@ class AdminUserDetailScreen extends StatelessWidget {
               Obx(
                 () => DropdownButtonFormField<String>(
                   decoration: const InputDecoration(labelText: 'Role'),
-                  value: role.value,
+                  initialValue: role.value,
                   items: ['User', 'Admin'].map((String val) {
                     return DropdownMenuItem<String>(
                       value: val,

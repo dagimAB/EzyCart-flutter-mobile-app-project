@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:ezycart/data/repositories/user/user_repository.dart';
 import 'package:ezycart/features/personalization/models/user_model.dart';
+import 'package:ezycart/services/secure_storage_service.dart';
 import 'package:ezycart/utils/popups/loaders.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -72,8 +73,14 @@ class UserController extends GetxController {
             profilePicture: pic,
             role: dbUser.role,
           );
+          // Cache the role securely so the UI can enforce admin features even before Firestore returns.
+          await SecureStorageService.instance.writeSecureData(
+            'userRole',
+            dbUser.role,
+          );
         } else {
           user.value = UserModel.empty();
+          await SecureStorageService.instance.deleteSecureData('userRole');
         }
       }
     } catch (e) {
