@@ -23,24 +23,52 @@ class AiChatScreen extends StatelessWidget {
                 itemCount: controller.messages.length,
                 itemBuilder: (context, index) {
                   final msg = controller.messages[index];
-                  return Align(
-                    alignment: msg.isUser
-                        ? Alignment.centerRight
-                        : Alignment.centerLeft,
-                    child: Container(
-                      margin: const EdgeInsets.symmetric(vertical: 4),
-                      padding: const EdgeInsets.all(12),
-                      decoration: BoxDecoration(
-                        color: msg.isUser ? EColors.primary : EColors.light,
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: Text(
-                        msg.text,
-                        style: TextStyle(
-                          color: msg.isUser ? EColors.white : EColors.dark,
+                  return Row(
+                    mainAxisAlignment: msg.isUser
+                        ? MainAxisAlignment.end
+                        : MainAxisAlignment.start,
+                    children: [
+                      if (!msg.isUser) ...[
+                        const CircleAvatar(child: Icon(Icons.smart_toy)),
+                        const SizedBox(width: ESizes.spaceBtwItems),
+                      ],
+                      Flexible(
+                        child: Column(
+                          crossAxisAlignment: msg.isUser
+                              ? CrossAxisAlignment.end
+                              : CrossAxisAlignment.start,
+                          children: [
+                            Container(
+                              margin: const EdgeInsets.symmetric(vertical: 4),
+                              padding: const EdgeInsets.all(12),
+                              decoration: BoxDecoration(
+                                color: msg.isUser
+                                    ? EColors.primary
+                                    : EColors.light,
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              child: Text(
+                                msg.text,
+                                style: TextStyle(
+                                  color: msg.isUser
+                                      ? EColors.white
+                                      : EColors.dark,
+                                ),
+                              ),
+                            ),
+                            Text(
+                              '${msg.timestamp.hour.toString().padLeft(2, '0')}:${msg.timestamp.minute.toString().padLeft(2, '0')}',
+                              style: Theme.of(context).textTheme.labelSmall!
+                                  .copyWith(color: EColors.grey),
+                            ),
+                          ],
                         ),
                       ),
-                    ),
+                      if (msg.isUser) ...[
+                        const SizedBox(width: ESizes.spaceBtwItems),
+                        const CircleAvatar(child: Icon(Icons.person)),
+                      ],
+                    ],
                   );
                 },
               ),
