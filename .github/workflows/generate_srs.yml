@@ -1,0 +1,36 @@
+name: Generate SRS Artifacts
+
+on:
+  workflow_dispatch: {}
+  push:
+    branches: [main, master]
+
+jobs:
+  build-srs:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y pandoc wkhtmltopdf texlive-xetex
+
+      - name: Generate PDF
+        run: |
+          pandoc docs/srs.md -o docs/srs.pdf --pdf-engine=xelatex --resource-path=.:docs
+
+      - name: Generate PPTX
+        run: |
+          pandoc docs/srs.md -o docs/srs.pptx --resource-path=.:docs
+
+      - name: Commit artifacts
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/srs.pdf docs/srs.pptx
+          git commit -m "chore(docs): add generated SRS PDF and PPTX" || echo "No changes to commit"
+          git push
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
