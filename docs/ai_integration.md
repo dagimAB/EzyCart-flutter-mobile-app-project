@@ -18,7 +18,11 @@ This document explains how the AI Assistant is integrated into EzyCart, how to c
    - Store in `.env` and load via `flutter_dotenv` (development).
    - On devices, store secrets using `flutter_secure_storage`.
 
-2. Update `AiAssistantService._endpoint` and the payload/response handling to match your provider's API.
+2. Configure provider and key
+
+   - Add your key to `.env` (see `.env.example`) as `GEMINI_API_KEY=...` or write it into `flutter_secure_storage` under `GEMINI_API_KEY`.
+   - The service is pre-configured to call Google Generative Language endpoints when a key is present. If you use another provider, update `lib/services/ai/ai_assistant_service.dart`'s `_sendToRemote` method to match the provider's payload and parsing.
+   - Optional env vars: `USE_BEARER=true` to force Bearer Authorization header, and `GEMINI_MODEL` to override the model name (default `gemini-1.5`).
 
 3. (Optional) Add provider SDK dependency if preferred (e.g., `google_generative_ai`) and implement richer request/response handling.
 

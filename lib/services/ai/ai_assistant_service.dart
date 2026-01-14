@@ -19,8 +19,10 @@ class AiAssistantService {
 
   final _secureStorage = const FlutterSecureStorage();
 
-  /// Remote endpoint (placeholder). Replace with the real Gemini REST endpoint when available.
-  final _remoteEndpoint = Uri.parse('https://api.example.com/v1/generate');
+  /// Remote endpoint base for Google Generative Language (Gemini-like) APIs.
+  /// Replace model name via GEMINI_MODEL env var if needed.
+  final _googleGenerateBase =
+      'https://generativelanguage.googleapis.com/v1beta2/models';
 
   /// Main entry. Tries remote call if API key configured, otherwise uses local fallback.
   Future<String> sendMessage(
@@ -56,21 +58,32 @@ class AiAssistantService {
     String apiKey, {
     Map<String, dynamic>? context,
   }) async {
-    // Build provider-specific payload here. This is a generic example and MUST be adapted
-    // to the chosen provider's API schema.
+    // Use Google Generative API path for a default model. You can change the model name if needed.
+    final model = dotenv.env['GEMINI_MODEL'] ?? 'gemini-1.5';
+    final uri = Uri.parse(
+      '$_googleGenerateBase/$model:generate${_maybeKeyQuery(apiKey)}',
+    );
+
+    // Google generative payload requires nested prompt object. We include a short system prompt.
+    final promptText = (context != null && context['system'] != null)
+        ? '${context['system']}\n\nUser: $message'
+        : 'User: $message';
+
     final payload = {
-      'model': 'gemini-1.5',
-      'prompt': message,
-      'context': context ?? {},
+      'prompt': {'text': promptText},
+      'temperature': 0.2,
       'maxOutputTokens': 512,
     };
 
     final resp = await http
         .post(
-          _remoteEndpoint,
+          uri,
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': 'Bearer $apiKey',
+            // Prefer Bearer auth if apiKey looks like an OAuth token, otherwise the key param is used
+            if (apiKey.startsWith('ya29.') ||
+                dotenv.env['USE_BEARER'] == 'true')
+              'Authorization': 'Bearer $apiKey',
           },
           body: jsonEncode(payload),
         )
@@ -78,9 +91,25 @@ class AiAssistantService {
 
     if (resp.statusCode >= 200 && resp.statusCode < 300) {
       final data = jsonDecode(resp.body) as Map<String, dynamic>;
-      // NOTE: adapt to your provider's response format
-      final out = data['output'] ?? data['choices']?[0]?['text'];
-      return (out is String) ? out : jsonEncode(out ?? '');
+
+      // Google may return candidates with text in 'candidates[0].content' or similar.
+      if (data.containsKey('candidates') &&
+          (data['candidates'] as List).isNotEmpty) {
+        final first =
+            (data['candidates'] as List).first as Map<String, dynamic>;
+        if (first.containsKey('content')) return first['content'] as String;
+        if (first.containsKey('output')) return first['output'] as String;
+      }
+
+      // Generic provider shapes
+      if (data.containsKey('output') && data['output'] is String)
+        return data['output'] as String;
+      if (data.containsKey('choices') && (data['choices'] as List).isNotEmpty) {
+        final c0 = (data['choices'] as List).first;
+        if (c0 is Map && c0.containsKey('text')) return c0['text'] as String;
+      }
+
+      return jsonEncode(data);
     }
 
     throw 'AI service returned ${resp.statusCode}: ${resp.body}';
