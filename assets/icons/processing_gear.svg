@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="200" height="200" role="img" aria-label="Processing gear animation">
+  <title>Processing</title>
+  <defs>
+    <linearGradient id="grad" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0%" stop-color="#6c8ef5"/>
+      <stop offset="100%" stop-color="#4b6adf"/>
+    </linearGradient>
+    <filter id="shadow" x="-50%" y="-50%" width="200%" height="200%">
+      <feDropShadow dx="0" dy="1" stdDeviation="1" flood-color="#000" flood-opacity="0.25"/>
+    </filter>
+  </defs>
+
+  <!-- center everything at 50,50 -->
+  <g transform="translate(50 50)">
+
+    <!-- The rotating group -->
+    <g id="rotating">
+      <!-- Gear teeth: 12 teeth placed around the center -->
+      <rect x="-2" y="-38" width="4" height="12" rx="1" fill="#555"/>
+      <rect x="-2" y="-38" width="4" height="12" rx="1" fill="#555" transform="rotate(30)"/>
+      <rect x="-2" y="-38" width="4" height="12" rx="1" fill="#555" transform="rotate(60)"/>
+      <rect x="-2" y="-38" width="4" height="12" rx="1" fill="#555" transform="rotate(90)"/>
+      <rect x="-2" y="-38" width="4" height="12" rx="1" fill="#555" transform="rotate(120)"/>
+      <rect x="-2" y="-38" width="4" height="12" rx="1" fill="#555" transform="rotate(150)"/>
+      <rect x="-2" y="-38" width="4" height="12" rx="1" fill="#555" transform="rotate(180)"/>
+      <rect x="-2" y="-38" width="4" height="12" rx="1" fill="#555" transform="rotate(210)"/>
+      <rect x="-2" y="-38" width="4" height="12" rx="1" fill="#555" transform="rotate(240)"/>
+      <rect x="-2" y="-38" width="4" height="12" rx="1" fill="#555" transform="rotate(270)"/>
+      <rect x="-2" y="-38" width="4" height="12" rx="1" fill="#555" transform="rotate(300)"/>
+      <rect x="-2" y="-38" width="4" height="12" rx="1" fill="#555" transform="rotate(330)"/>
+
+      <!-- Outer ring -->
+      <circle r="30" fill="none" stroke="#aeb9ff" stroke-width="2" opacity="0.18"/>
+
+      <!-- Main gear body -->
+      <circle r="20" fill="url(#grad)" filter="url(#shadow)"/>
+
+      <!-- Center hole -->
+      <circle r="7" fill="#fff" opacity="0.95"/>
+
+      <!-- rotation animation (SMIL) -->
+      <animateTransform attributeName="transform" attributeType="XML" type="rotate" from="0" to="360" dur="1.6s" repeatCount="indefinite"/>
+    </g>
+
+    <!-- subtle pulsing to indicate activity -->
+    <circle r="32" fill="none" stroke="#4b6adf" stroke-width="2" opacity="0.08">
+      <animate attributeName="opacity" values="0.08;0.22;0.08" dur="1.6s" repeatCount="indefinite"/>
+      <animate attributeName="r" values="32;34;32" dur="1.6s" repeatCount="indefinite"/>
+    </circle>
+
+  </g>
+</svg>

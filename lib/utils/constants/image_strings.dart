@@ -36,6 +36,7 @@ class EImages {
       "assets/images/animations/verify_email.gif";
   static const String pencilAnimation =
       "assets/images/animations/verify_email.gif";
+  static const String processingGear = "assets/icons/processing_gear.svg";
   static const String orderCompletedAnimation =
       "assets/images/animations/email_success.gif";
 

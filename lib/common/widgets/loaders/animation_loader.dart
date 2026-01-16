@@ -2,6 +2,7 @@ import 'package:ezycart/utils/constants/colors.dart';
 import 'package:ezycart/utils/constants/sizes.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class EAnimationLoaderWidget extends StatelessWidget {
   const EAnimationLoaderWidget({
@@ -21,29 +22,33 @@ class EAnimationLoaderWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Determine if we should use Lottie or a standard Image widget
+    // Determine the asset type
     final isLottie = animation.toLowerCase().endsWith('.json');
+    final isSvg = animation.toLowerCase().endsWith('.svg');
 
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          isLottie
-              ? Lottie.asset(
-                  animation,
-                  width: MediaQuery.of(context).size.width * 0.8,
-                )
-              : Image.asset(
-                  animation,
-                  width: MediaQuery.of(context).size.width * 0.8,
-                  errorBuilder: (context, error, stackTrace) {
-                    return const Icon(
-                      Icons.error,
-                      size: 80,
-                      color: Colors.grey,
-                    );
-                  },
-                ),
+          if (isLottie)
+            Lottie.asset(
+              animation,
+              width: MediaQuery.of(context).size.width * 0.8,
+            )
+          else if (isSvg)
+            SvgPicture.asset(
+              animation,
+              width: MediaQuery.of(context).size.width * 0.8,
+              height: MediaQuery.of(context).size.width * 0.8,
+            )
+          else
+            Image.asset(
+              animation,
+              width: MediaQuery.of(context).size.width * 0.8,
+              errorBuilder: (context, error, stackTrace) {
+                return const Icon(Icons.error, size: 80, color: Colors.grey);
+              },
+            ),
           const SizedBox(height: ESizes.defaultSpace),
           Text(
             text,

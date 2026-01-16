@@ -46,6 +46,7 @@ dependencies:
   readmore: ^3.0.0
   flutter_rating_bar: ^4.0.1
   lottie: ^3.3.2
+  flutter_svg: ^2.0.6
 
 #------------------PACKAGE END --------------#
 dev_dependencies:
@@ -62,6 +63,7 @@ flutter:
   assets:
     - .env
     - assets/logos/
+    - assets/icons/
     - assets/icons/brands/
     - assets/images/banners/
     - assets/icons/categories/

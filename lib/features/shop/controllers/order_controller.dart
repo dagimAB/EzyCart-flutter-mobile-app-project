@@ -44,7 +44,7 @@ class OrderController extends GetxController {
       // Start Loader
       EFullScreenLoader.openLoadingDialog(
         'Processing your order',
-        EImages.pencilAnimation,
+        EImages.processingGear,
       );
 
       // Get User Id
@@ -109,6 +109,9 @@ class OrderController extends GetxController {
 
       // Save the order to Firestore
       await orderRepository.saveOrder(order, userId);
+
+      // Email functionality permanently removed per project settings.
+      // If you later want to re-enable emails, re-add the EmailService and the send call here and configure provider keys in .env.
 
       // Update the cart status
       cartController.clearCart();

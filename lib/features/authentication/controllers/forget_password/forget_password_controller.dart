@@ -20,7 +20,7 @@ class ForgetPasswordController extends GetxController {
       // 1. Start Loading
       EFullScreenLoader.openLoadingDialog(
         'Processing your request...',
-        EImages.pencilAnimation,
+        EImages.processingGear,
       );
 
       // 2. Validate Form
@@ -58,7 +58,7 @@ class ForgetPasswordController extends GetxController {
       // 1. Start Loading
       EFullScreenLoader.openLoadingDialog(
         'Processing your request...',
-        EImages.pencilAnimation,
+        EImages.processingGear,
       );
 
       // 2. Send Email using Repository
