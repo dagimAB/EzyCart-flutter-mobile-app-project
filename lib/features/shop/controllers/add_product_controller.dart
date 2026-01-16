@@ -57,7 +57,7 @@ class AddProductController extends GetxController {
       // Start Loading
       EFullScreenLoader.openLoadingDialog(
         'Saving Product...',
-        EImages.onBoardingImage1,
+        EImages.processingGear,
       );
 
       // Form Validation
