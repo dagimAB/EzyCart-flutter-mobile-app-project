@@ -8,7 +8,6 @@ import 'package:ezycart/utils/constants/enums.dart';
 import 'package:ezycart/utils/constants/sizes.dart';
 import 'package:ezycart/utils/helpers/helper_functions.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 
 class AdminOrderDetailsScreen extends StatelessWidget {
   const AdminOrderDetailsScreen({super.key, required this.order});
@@ -53,7 +52,7 @@ class AdminOrderDetailsScreen extends StatelessWidget {
                             decoration: const InputDecoration(
                               labelText: 'Status',
                             ),
-                            value: order.status,
+                            initialValue: order.status,
                             onChanged: (OrderStatus? newValue) {
                               if (newValue != null) {
                                 controller.updateOrderStatus(order, newValue);

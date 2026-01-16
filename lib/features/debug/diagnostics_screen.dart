@@ -89,6 +89,20 @@ class DiagnosticsScreen extends StatelessWidget {
                   ? 'Present (masked)'
                   : 'Missing: add FIREBASE_API_KEY to .env',
             ),
+            _statusTile(
+              title: 'Firebase Project ID',
+              ok: firebaseProjectId.isNotEmpty,
+              message: firebaseProjectId.isNotEmpty
+                  ? 'Present: $firebaseProjectId'
+                  : 'Missing: add FIREBASE_PROJECT_ID to .env',
+            ),
+            _statusTile(
+              title: 'Firebase App ID',
+              ok: firebaseAppId.isNotEmpty,
+              message: firebaseAppId.isNotEmpty
+                  ? 'Present (masked)'
+                  : 'Missing: add FIREBASE_APP_ID to .env',
+            ),
             const Divider(),
             const Text(
               'Platform files',

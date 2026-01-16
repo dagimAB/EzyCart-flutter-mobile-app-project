@@ -26,8 +26,8 @@ class ELoaders {
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(30),
               color: EHelperFunctions.isDarkMode(Get.context!)
-                  ? EColors.darkerGrey.withOpacity(0.9)
-                  : EColors.grey.withOpacity(0.9),
+                  ? EColors.darkerGrey.withValues(alpha: 0.9)
+                  : EColors.grey.withValues(alpha: 0.9),
             ),
             child: Center(
               child: Text(

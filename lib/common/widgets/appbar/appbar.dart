@@ -4,8 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
 
-
-
 class EAppBar extends StatelessWidget implements PreferredSizeWidget {
   const EAppBar({
     super.key,
@@ -30,7 +28,7 @@ class EAppBar extends StatelessWidget implements PreferredSizeWidget {
         automaticallyImplyLeading: false,
         leading: showBackArrow
             ? IconButton(
-                onPressed: () => Get.back(),
+                onPressed: leadingOnPressed ?? () => Get.back(),
                 icon: const Icon(Iconsax.arrow_left),
               )
             : leadingIcon != null
@@ -38,8 +36,8 @@ class EAppBar extends StatelessWidget implements PreferredSizeWidget {
             : null,
         title: title,
         actions: actions,
-      ), 
-    ); 
+      ),
+    );
   }
 
   @override

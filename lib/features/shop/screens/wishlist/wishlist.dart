@@ -19,7 +19,8 @@ class FavouriteScreen extends StatelessWidget {
     final controller = FavouritesController.instance;
     return Scaffold(
       appBar: EAppBar(
-        showBackArrow: false,
+        leadingOnPressed: () =>
+            Get.find<NavigationController>().selectedIndex.value = 0,
         title: Text(
           'Wishlist',
           style: Theme.of(context).textTheme.headlineMedium,

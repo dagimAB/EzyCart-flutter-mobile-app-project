@@ -2,8 +2,9 @@ import 'package:ezycart/data/repositories/authentication/authentication_reposito
 import 'package:ezycart/data/repositories/user/user_repository.dart';
 import 'package:ezycart/features/authentication/screens/signup/verify_email.dart';
 import 'package:ezycart/features/personalization/models/user_model.dart';
-import 'package:ezycart/utils/popups/loaders.dart';
+import 'package:ezycart/services/secure_storage_service.dart';
 import 'package:ezycart/utils/errors/error_handler.dart';
+import 'package:ezycart/utils/popups/loaders.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -52,12 +53,10 @@ class SignupController extends GetxController {
       // 3. Start Loading
       isLoading.value = true;
 
-      // 4. Register user
+      // 4. Firebase still needs the raw password, so we trim it here before handing it over.
+      final trimmedPassword = password.text.trim();
       final userCredential = await AuthenticationRepository.instance
-          .registerWithEmailAndPassword(
-            email.text.trim(),
-            password.text.trim(),
-          );
+          .registerWithEmailAndPassword(email.text.trim(), trimmedPassword);
 
       // 5. Save User Data
       final newUser = UserModel(
@@ -72,6 +71,11 @@ class SignupController extends GetxController {
 
       final userRepository = Get.put(UserRepository());
       await userRepository.saveUserRecord(newUser);
+      // Cache the role locally so role-gated widgets can stay consistent before Firestore reloads.
+      await SecureStorageService.instance.writeSecureData(
+        'userRole',
+        newUser.role,
+      );
 
       // 6. Success
       ELoaders.successSnackBar(

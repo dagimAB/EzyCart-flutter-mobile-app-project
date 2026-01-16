@@ -2,19 +2,19 @@ import 'package:ezycart/features/authentication/screens/login/login.dart';
 import 'package:ezycart/features/authentication/screens/onBoarding/onboarding.dart';
 import 'package:ezycart/features/authentication/screens/signup/verify_email.dart';
 import 'package:ezycart/navigation_menu.dart';
+import 'package:ezycart/services/secure_storage_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get/get.dart';
-import 'package:get_storage/get_storage.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 class AuthenticationRepository extends GetxController {
   static AuthenticationRepository get instance => Get.find();
 
-  final deviceStorage = GetStorage();
+  final SecureStorageService _secureStorage = SecureStorageService.instance;
 
   /// Firebase auth instance.
   /// We access it lazily to allow clearer error messages if Firebase isn't initialized yet.
@@ -31,9 +31,8 @@ class AuthenticationRepository extends GetxController {
 
   @override
   void onReady() {
-    // Remove the native splash screen if it's still there (handled by main.dart usually now)
-    // FlutterNativeSplash.remove();
-    // screenRedirect(); // Removed from here
+    // Listen for auth changes so the UI reacts when tokens expire or the user logs out.
+    _auth.authStateChanges().listen((_) => screenRedirect());
   }
 
   // Called manually from SplashScreen
@@ -44,6 +43,13 @@ class AuthenticationRepository extends GetxController {
       if (user != null) {
         // Check if Email is Verified
         if (user.emailVerified) {
+          // Store fresh auth token + uid securely so we never rely on insecure storage.
+          // Refresh token/uid in secure storage so the UI can resume sessions safely.
+          final idToken = await user.getIdToken();
+          if (idToken != null) {
+            await _secureStorage.writeSecureData('authToken', idToken);
+          }
+          await _secureStorage.writeSecureData('uid', user.uid);
           // If user is logged in and verified, go to Home
           Get.offAll(() => const NavigationMenu());
         } else {
@@ -51,17 +57,17 @@ class AuthenticationRepository extends GetxController {
           Get.offAll(() => VerifyEmailScreen(email: user.email));
         }
       } else {
-        // Local Storage
-        deviceStorage.writeIfNull('IsFirstTime', true);
+        final hasSeenOnboarding = await _secureStorage.readSecureData(
+          'hasSeenOnboarding',
+        );
 
-        // Check if it's the first time launching the app
-        deviceStorage.read('IsFirstTime') != true
-            ? Get.offAll(
-                () => const LoginScreen(),
-              ) // Redirect to Login if not first time
-            : Get.offAll(
-                () => const OnBoardingScreen(),
-              ); // Redirect to OnBoarding if first time
+        if (hasSeenOnboarding == 'true') {
+          Get.offAll(() => const LoginScreen());
+        } else {
+          // Store the flag securely so attackers cannot flip it and bypass onboarding terms.
+          await _secureStorage.writeSecureData('hasSeenOnboarding', 'true');
+          Get.offAll(() => const OnBoardingScreen());
+        }
       }
     } catch (e) {
       // Handle potential errors (e.g., Firebase initialization issues on web)
@@ -84,10 +90,18 @@ class AuthenticationRepository extends GetxController {
         throw 'Firebase is not initialized. Please check your configuration.';
       }
 
-      return await _auth.signInWithEmailAndPassword(
+      // Firebase endpoints always use HTTPS which stops attackers from spying on the credentials-in-transit.
+      final credential = await _auth.signInWithEmailAndPassword(
         email: email,
         password: password,
       );
+      // Store the token in encrypted storage so other apps cannot read it from disk.
+      final token = await credential.user?.getIdToken();
+      if (token != null) {
+        await _secureStorage.writeSecureData('authToken', token);
+      }
+      await _secureStorage.writeSecureData('uid', credential.user?.uid ?? '');
+      return credential;
     } on FirebaseAuthException catch (e, st) {
       // Log for debugging
       debugPrint(
@@ -121,10 +135,17 @@ class AuthenticationRepository extends GetxController {
     String password,
   ) async {
     try {
-      return await _auth.createUserWithEmailAndPassword(
+      final credential = await _auth.createUserWithEmailAndPassword(
         email: email,
         password: password,
       );
+      // Persist the session token securely right after account creation.
+      final token = await credential.user?.getIdToken();
+      if (token != null) {
+        await _secureStorage.writeSecureData('authToken', token);
+      }
+      await _secureStorage.writeSecureData('uid', credential.user?.uid ?? '');
+      return credential;
     } on FirebaseAuthException catch (e) {
       throw e.message!;
     } catch (e) {
@@ -224,6 +245,8 @@ class AuthenticationRepository extends GetxController {
     try {
       await FirebaseAuth.instance.signOut();
       await GoogleSignIn().signOut();
+      // Wipe secrets from the device so the next user cannot reuse this session.
+      await _secureStorage.clearSessionSecrets();
       Get.offAll(() => const LoginScreen());
     } catch (e) {
       throw 'Something went wrong. Please try again';
