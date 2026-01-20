@@ -55,7 +55,7 @@ class AdminUserController extends GetxController {
     try {
       EFullScreenLoader.openLoadingDialog(
         'Updating User...',
-        EImages.pencilAnimation,
+        EImages.processingGear,
       );
 
       await userRepository.updateUserRecord(user);
@@ -84,7 +84,7 @@ class AdminUserController extends GetxController {
     try {
       EFullScreenLoader.openLoadingDialog(
         'Deleting User...',
-        EImages.pencilAnimation,
+        EImages.processingGear,
       );
 
       await userRepository.deleteUserRecord(userId);

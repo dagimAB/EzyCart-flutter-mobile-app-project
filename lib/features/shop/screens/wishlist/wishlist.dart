@@ -19,8 +19,12 @@ class FavouriteScreen extends StatelessWidget {
     final controller = FavouritesController.instance;
     return Scaffold(
       appBar: EAppBar(
-        leadingOnPressed: () =>
-            Get.find<NavigationController>().selectedIndex.value = 0,
+        leadingOnPressed: () {
+          final nav = Get.isRegistered<NavigationController>()
+              ? Get.find<NavigationController>()
+              : Get.put(NavigationController());
+          nav.selectedIndex.value = 0;
+        },
         title: Text(
           'Wishlist',
           style: Theme.of(context).textTheme.headlineMedium,
@@ -28,8 +32,12 @@ class FavouriteScreen extends StatelessWidget {
         actions: [
           ECircularIcon(
             icon: Iconsax.add,
-            onPressed: () =>
-                Get.find<NavigationController>().selectedIndex.value = 0,
+            onPressed: () {
+              final nav = Get.isRegistered<NavigationController>()
+                  ? Get.find<NavigationController>()
+                  : Get.put(NavigationController());
+              nav.selectedIndex.value = 0;
+            },
           ),
         ],
       ),

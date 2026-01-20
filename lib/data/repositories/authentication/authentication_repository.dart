@@ -64,8 +64,9 @@ class AuthenticationRepository extends GetxController {
         if (hasSeenOnboarding == 'true') {
           Get.offAll(() => const LoginScreen());
         } else {
-          // Store the flag securely so attackers cannot flip it and bypass onboarding terms.
-          await _secureStorage.writeSecureData('hasSeenOnboarding', 'true');
+          // Show onboarding. The 'hasSeenOnboarding' flag will be written only
+          // after the user completes or explicitly skips onboarding to avoid
+          // race conditions where other listeners redirect to Login prematurely.
           Get.offAll(() => const OnBoardingScreen());
         }
       }

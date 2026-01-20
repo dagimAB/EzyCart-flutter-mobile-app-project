@@ -16,8 +16,15 @@ class CartScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: EAppBar(
-        leadingOnPressed: () =>
-            Get.find<NavigationController>().selectedIndex.value = 0,
+        leadingOnPressed: () {
+          // If this screen was pushed (e.g., from icon tap), pop back.
+          // If not (we're inside the main NavigationMenu), switch to Home tab.
+          if (Navigator.of(context).canPop()) {
+            Get.back();
+          } else {
+            Get.find<NavigationController>().selectedIndex.value = 0;
+          }
+        },
         title: Text('Cart', style: Theme.of(context).textTheme.headlineSmall),
       ),
       body: Obx(() {

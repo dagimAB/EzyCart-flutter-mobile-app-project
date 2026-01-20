@@ -115,6 +115,19 @@ class ProductRepository extends GetxController {
     }
   }
 
+  /// Delete a product by its document ID
+  Future<void> deleteProduct(String productId) async {
+    try {
+      await _db.collection('Products').doc(productId).delete();
+    } on FirebaseException catch (e) {
+      throw e.message!;
+    } on PlatformException catch (e) {
+      throw e.message!;
+    } catch (e) {
+      throw 'Something went wrong. Please try again';
+    }
+  }
+
   /// Search Products
   Future<List<ProductModel>> searchProducts(String query) async {
     try {

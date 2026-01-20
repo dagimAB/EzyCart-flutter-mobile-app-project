@@ -117,9 +117,25 @@ class EProductCardVertical extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 // Price
-                const Padding(
-                  padding: EdgeInsets.only(left: ESizes.sm),
-                  child: EProductPriceText(price: '35.0'),
+                Padding(
+                  padding: const EdgeInsets.only(left: ESizes.sm),
+                  child: product.salePrice != null && product.salePrice! > 0
+                      ? Row(
+                          children: [
+                            EProductPriceText(
+                              price: product.salePrice!.toStringAsFixed(2),
+                              isLarge: true,
+                            ),
+                            const SizedBox(width: 8),
+                            EProductPriceText(
+                              price: product.price.toStringAsFixed(2),
+                              lineThrough: true,
+                            ),
+                          ],
+                        )
+                      : EProductPriceText(
+                          price: product.price.toStringAsFixed(2),
+                        ),
                 ),
 
                 // Add to Cart Button (updates color when product is in cart)

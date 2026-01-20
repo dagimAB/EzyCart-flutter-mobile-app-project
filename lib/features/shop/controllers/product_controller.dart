@@ -4,7 +4,10 @@ import 'package:get/get.dart';
 import 'package:ezycart/utils/errors/error_handler.dart';
 
 class ProductController extends GetxController {
-  static ProductController get instance => Get.find();
+  // Ensure a controller is available even if HomeScreen hasn't been built
+  static ProductController get instance => Get.isRegistered<ProductController>()
+      ? Get.find()
+      : Get.put(ProductController());
 
   final isLoading = false.obs;
   final productRepository = Get.put(ProductRepository());

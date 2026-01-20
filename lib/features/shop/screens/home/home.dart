@@ -14,6 +14,7 @@ import 'package:flutter/material.dart';
 import 'package:ezycart/features/shop/controllers/product_controller.dart';
 import 'package:ezycart/common/widgets/products/product_cards/product_card_vertical.dart';
 import 'package:get/get.dart';
+import 'package:ezycart/features/ai_assistant/screens/chat_screen.dart';
 
 // Fix: Ensure Home screen rebuilds correctly
 class HomeScreen extends StatelessWidget {
@@ -37,18 +38,50 @@ class HomeScreen extends StatelessWidget {
                     onTap: () => Get.to(() => const SearchScreen()),
                   ),
                   const SizedBox(height: ESizes.spaceBtwSections),
-                  const Padding(
-                    padding: EdgeInsets.only(left: ESizes.defaultSpace),
+                  Padding(
+                    padding: const EdgeInsets.only(
+                      left: ESizes.defaultSpace,
+                      right: ESizes.defaultSpace,
+                    ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        ESectionHeading(
-                          title: 'Popular Categories',
-                          showActionButton: false,
-                          textColor: EColors.white,
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            const Expanded(
+                              child: ESectionHeading(
+                                title: 'Popular Categories',
+                                showActionButton: false,
+                                textColor: EColors.white,
+                              ),
+                            ),
+                            Tooltip(
+                              message: 'AI Assistant',
+                              preferBelow: false,
+                              child: GestureDetector(
+                                onTap: () => Get.to(() => const ChatScreen()),
+                                child: Container(
+                                  width: 48,
+                                  height: 48,
+                                  decoration: BoxDecoration(
+                                    color: EColors.white,
+                                    shape: BoxShape.circle,
+                                  ),
+                                  padding: const EdgeInsets.all(4),
+                                  child: ClipOval(
+                                    child: Image.asset(
+                                      'assets/logos/ai_logo.jpg',
+                                      fit: BoxFit.cover,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
-                        SizedBox(height: ESizes.spaceBtwItems),
-                        EHomeCategories(), // This now has a height of 100 internally
+                        const SizedBox(height: ESizes.spaceBtwItems),
+                        const EHomeCategories(), // This now has a height of 100 internally
                       ],
                     ),
                   ),
@@ -69,6 +102,7 @@ class HomeScreen extends StatelessWidget {
                       EImages.promoBanner3,
                     ],
                   ),
+                  const SizedBox(height: ESizes.spaceBtwSections),
                   const SizedBox(height: ESizes.spaceBtwSections),
                   ESectionHeading(
                     title: 'Popular Products',

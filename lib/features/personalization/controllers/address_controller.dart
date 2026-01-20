@@ -82,7 +82,7 @@ class AddressController extends GetxController {
       // Start Loading
       EFullScreenLoader.openLoadingDialog(
         'Storing Address...',
-        EImages.pencilAnimation,
+        EImages.processingGear,
       );
 
       // Form Validation
