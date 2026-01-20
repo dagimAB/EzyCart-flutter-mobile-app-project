@@ -1,0 +1,29 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Flutter: devices",
+      "type": "shell",
+      "command": "flutter devices",
+      "problemMatcher": []
+    },
+    {
+      "label": "Android: start emulator (list)",
+      "type": "shell",
+      "command": "emulator -list-avds && echo Use 'emulator -avd <name>' to start one",
+      "problemMatcher": []
+    },
+    {
+      "label": "Android: setup (project helper)",
+      "type": "shell",
+      "command": "pwsh -NoProfile -ExecutionPolicy Bypass ./scripts/android-setup.ps1",
+      "problemMatcher": []
+    },
+    {
+      "label": "Flutter: run on device",
+      "type": "shell",
+      "command": "flutter run",
+      "problemMatcher": []
+    }
+  ]
+}
